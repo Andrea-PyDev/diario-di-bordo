@@ -2,7 +2,6 @@
 
 App per segnare le ore di lavoro a scuola. Funziona offline, i dati restano sul telefono.
 
-## 1. Pubblicala su GitHub Pages (gratis, 5 minuti)
 
 ```bash
 cd diario-di-bordo
@@ -17,7 +16,7 @@ git push -u origin main
 Su GitHub: **Settings → Pages → Source: Deploy from a branch → main / (root) → Save**.
 Dopo circa 1 minuto l'app è online su: `https://<tuo-utente>.github.io/diario-di-bordo/`
 
-## 2. Installala sul telefono di Alessia (Android)
+## 2. Installala sul telefono (Android)
 
 1. Apri il link con **Chrome**
 2. Menu ⋮ → **Aggiungi a schermata Home** (o "Installa app")
