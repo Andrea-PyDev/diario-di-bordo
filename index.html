@@ -1,0 +1,604 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#14324f">
+<meta name="description" content="Orario settimanale e note: il diario di bordo di Alessia">
+<title>Diario di Bordo</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   TEMA "Diario di bordo": avventura piratesca originale.
+   I colori sono variabili: il tema scuro cambia solo queste.
+   ========================================================= */
+:root{
+  --mare:#14324f; --mare-2:#1f4a73; --onda:#2f6e9e;
+  --pergamena:#f4e7c9; --pergamena-2:#ead7ac; --carta:#fbf3df;
+  --inchiostro:#3a2716; --sbiadito:#7a6248;
+  --oro:#d9a441; --oro-scuro:#a8761d; --rosso:#b8322a; --corda:#a07a4a;
+  --ombra:0 2px 0 rgba(58,39,22,.15), 0 6px 18px rgba(58,39,22,.12);
+  /* colori dei due ragazzi */
+  --r0:#b8322a; --r0-soft:#f3d3cc;
+  --r1:#2f6e9e; --r1-soft:#cfe0ee;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --pergamena:#0e2236; --pergamena-2:#13304b; --carta:#1a3654;
+    --inchiostro:#f2e6cc; --sbiadito:#b9a98a;
+    --mare:#0a1a2a; --mare-2:#11283f; --corda:#8c6a3f;
+    --ombra:0 2px 0 rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.35);
+    --r0:#e0665c; --r0-soft:#4a2630;
+    --r1:#5ea3d6; --r1-soft:#1d4466;
+  }
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%}
+body{
+  font-family:"Nunito",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  color:var(--inchiostro);font-size:16px;-webkit-font-smoothing:antialiased;
+  background:
+    radial-gradient(circle at 20% 10%, rgba(255,255,255,.25), transparent 40%),
+    radial-gradient(circle at 80% 90%, rgba(160,122,74,.18), transparent 45%),
+    var(--pergamena);
+  background-attachment:fixed;
+}
+.pirata{font-family:"Pirata One",Georgia,serif;font-weight:400;letter-spacing:.5px}
+.muted{color:var(--sbiadito)} .small{font-size:13px}
+
+/* ---------- HEADER con onde ---------- */
+header{
+  position:sticky;top:0;z-index:5;color:#f7ead0;
+  background:linear-gradient(180deg,var(--mare),var(--mare-2));
+  padding:calc(env(safe-area-inset-top) + 14px) 16px 22px;
+}
+header::after{
+  content:"";position:absolute;left:0;right:0;bottom:-11px;height:12px;transform:scaleY(-1);
+  background:radial-gradient(circle at 10px -2px, transparent 10px, var(--mare-2) 11px) 0 0/20px 12px repeat-x;
+}
+.head-row{display:flex;align-items:center;gap:12px;max-width:640px;margin:0 auto}
+header h1{margin:0;font-size:30px;line-height:1}
+header .sub{font-size:13px;opacity:.85;margin-top:3px}
+
+main{max-width:640px;margin:0 auto;padding:22px 16px calc(96px + env(safe-area-inset-bottom))}
+
+/* ---------- CARD pergamena con bordo a corda ---------- */
+.card{
+  background:var(--carta);border-radius:16px;padding:14px 16px;margin-bottom:12px;
+  box-shadow:var(--ombra);outline:4px solid var(--carta);
+  border:2px dashed color-mix(in srgb,var(--corda) 55%,transparent);
+}
+.card h2{margin:0 0 8px;font-size:24px}
+
+/* ---------- BOTTONI ---------- */
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 16px;border-radius:12px;
+  font-weight:700;min-height:46px;background:var(--pergamena-2);color:var(--inchiostro)}
+.btn:active{transform:translateY(1px)}
+.btn-prim{background:var(--rosso);color:#fff7e6;box-shadow:0 3px 0 #7d1f19}
+.btn-oro{background:var(--oro);color:#3a2716;box-shadow:0 3px 0 var(--oro-scuro)}
+.btn-ghost{background:transparent;border:2px solid var(--pergamena-2)}
+.btn-wide{width:100%}
+.btn-danger{color:var(--rosso)}
+.icon-btn{width:44px;height:44px;border-radius:12px;background:var(--pergamena-2);display:grid;place-items:center;font-size:22px;font-weight:800}
+
+/* ---------- RIEPILOGO SETTIMANA (bottino) ---------- */
+.bottino{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cassa{border-radius:14px;padding:12px;text-align:center}
+.cassa b{display:block;font-size:26px;line-height:1.1}
+.cassa span{font-size:13px;font-weight:700}
+.cassa.r0{background:var(--r0-soft)} .cassa.r0 b{color:var(--r0)}
+.cassa.r1{background:var(--r1-soft)} .cassa.r1 b{color:var(--r1)}
+.totale{text-align:center;margin-top:10px;font-weight:700}
+
+/* ---------- GIORNO della settimana ---------- */
+.giorno{padding:12px 14px}
+.giorno.oggi{border-color:var(--rosso);border-style:solid}
+.g-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.g-head h3{margin:0;font-size:24px}
+.badge-oggi{font-size:11px;font-weight:800;background:var(--rosso);color:#fff;padding:2px 8px;border-radius:99px;margin-left:8px;vertical-align:4px;font-family:"Nunito",sans-serif}
+.fascia{
+  display:flex;align-items:center;gap:10px;width:100%;text-align:left;
+  padding:10px 12px;border-radius:12px;margin-bottom:7px;font-weight:700;
+  border-left:6px solid;
+}
+.fascia.r0{background:var(--r0-soft);border-color:var(--r0)}
+.fascia.r1{background:var(--r1-soft);border-color:var(--r1)}
+.fascia .ora{font-size:17px;font-weight:800;white-space:nowrap}
+.fascia .chi{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fascia .dur{font-size:13px;color:var(--sbiadito)}
+.aggiungi{width:100%;padding:9px;border-radius:12px;border:2px dashed var(--pergamena-2);font-weight:700;color:var(--sbiadito)}
+.libero{font-size:14px;color:var(--sbiadito);margin:2px 0 8px}
+
+/* ---------- CALENDARIO ---------- */
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px}
+.cal-nav h2{margin:0;text-transform:capitalize;text-align:center}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.cal .dow{text-align:center;font-size:12px;font-weight:800;color:var(--sbiadito);padding-bottom:4px}
+.cal .d{aspect-ratio:1/1;border-radius:10px;background:var(--pergamena);display:grid;place-items:center;
+  font-size:15px;font-weight:700;position:relative}
+.cal .d.vuoto{background:transparent}
+.cal .d.dom{color:var(--rosso)}
+.cal .d.oggi{outline:2.5px solid var(--rosso)}
+.cal .d.nota{background:color-mix(in srgb,var(--oro) 35%,var(--pergamena))}
+.cal .d.nota::after{content:"";position:absolute;bottom:5px;width:6px;height:6px;border-radius:50%;background:var(--oro-scuro)}
+.nota-riga{display:block;width:100%;text-align:left;padding:11px 2px;border-bottom:1px dashed var(--pergamena-2)}
+.nota-riga:last-child{border-bottom:0}
+.nota-riga b{display:block;font-size:14px}
+.nota-riga span{font-size:14px;color:var(--sbiadito);white-space:pre-line}
+
+/* ---------- FORM ---------- */
+label.f{display:block;font-weight:700;margin:14px 0 6px}
+input[type=time]{min-width:0}
+input[type=time],input[type=text],textarea{
+  font:inherit;color:var(--inchiostro);width:100%;
+  background:var(--pergamena);border:2px solid var(--pergamena-2);border-radius:12px;padding:11px 12px;
+}
+input:focus,textarea:focus{outline:none;border-color:var(--oro)}
+textarea{min-height:140px;resize:vertical}
+.orari{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:center}
+.scelta{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.scelta button{padding:14px 8px;border-radius:14px;font-weight:800;font-size:16px;border:3px solid transparent;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.scelta .r0{background:var(--r0-soft)} .scelta .r1{background:var(--r1-soft)}
+.scelta .r0.on{border-color:var(--r0)} .scelta .r1.on{border-color:var(--r1)}
+.pallino{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:-1px;margin-right:6px}
+
+/* ---------- FOGLIO DAL BASSO ---------- */
+.overlay{position:fixed;inset:0;background:rgba(10,20,30,.5);z-index:20;display:none;align-items:flex-end;justify-content:center}
+.overlay.open{display:flex}
+.sheet{background:var(--carta);width:100%;max-width:640px;max-height:92vh;overflow:auto;
+  border-radius:22px 22px 0 0;padding:10px 16px calc(18px + env(safe-area-inset-bottom));animation:su .22s ease-out}
+@keyframes su{from{transform:translateY(40px);opacity:.5}to{transform:none;opacity:1}}
+.maniglia{width:44px;height:5px;border-radius:9px;background:var(--pergamena-2);margin:4px auto 10px}
+.sheet h3{margin:0;font-size:28px}
+.azioni{display:grid;grid-template-columns:1fr 2fr;gap:10px;margin-top:18px}
+.azioni.solo{grid-template-columns:1fr}
+
+/* ---------- NAV IN BASSO ---------- */
+nav{position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--mare);
+  display:grid;grid-template-columns:repeat(3,1fr);
+  padding:6px 6px calc(6px + env(safe-area-inset-bottom));border-top:3px solid var(--oro)}
+nav button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;color:#c9b996;font-size:12px;font-weight:700;border-radius:12px}
+nav button.on{color:#ffe6a8;background:rgba(255,255,255,.07)}
+nav svg{width:24px;height:24px}
+
+.toast{position:fixed;left:50%;bottom:calc(86px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);
+  background:var(--inchiostro);color:var(--pergamena);padding:11px 18px;border-radius:12px;font-weight:700;
+  opacity:0;transition:.25s;z-index:30;pointer-events:none;max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="head-row">
+    <!-- Rosa dei venti: disegno originale -->
+    <svg width="42" height="42" viewBox="0 0 64 64" aria-hidden="true">
+      <circle cx="32" cy="32" r="29" fill="none" stroke="#d9a441" stroke-width="3"/>
+      <circle cx="32" cy="32" r="22" fill="none" stroke="#d9a441" stroke-width="1.5" stroke-dasharray="3 3"/>
+      <path d="M32 6 L37 32 L32 58 L27 32Z" fill="#f4e7c9"/>
+      <path d="M6 32 L32 27 L58 32 L32 37Z" fill="#d9a441"/>
+      <path d="M32 6 L37 32 L32 32Z" fill="#b8322a"/>
+      <circle cx="32" cy="32" r="4" fill="#14324f" stroke="#d9a441" stroke-width="2"/>
+    </svg>
+    <div>
+      <h1 class="pirata" id="titolo">Diario di Bordo</h1>
+      <div class="sub" id="sottotitolo"></div>
+    </div>
+  </div>
+</header>
+
+<main id="app"></main>
+
+<div class="overlay" id="overlay"><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
+<div class="toast" id="toast"></div>
+
+<nav id="nav">
+  <button data-tab="sett">
+    <!-- timone -->
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg>
+    Settimana
+  </button>
+  <button data-tab="cal">
+    <!-- mappa -->
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z"/><path d="M9 4v14M15 6v14"/></svg>
+    Calendario
+  </button>
+  <button data-tab="imp">
+    <!-- ancora -->
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="2"/><path d="M12 7v14M8 11h8M5 14a7 7 0 0014 0"/></svg>
+    Impostazioni
+  </button>
+</nav>
+
+<script>
+"use strict";
+/* =========================================================
+   DIARIO DI BORDO v2
+   - Settimana: orario fisso di 7 giorni, ogni fascia oraria
+     è assegnata al ragazzo 1 o al ragazzo 2.
+   - Calendario: note libere per qualsiasi giorno.
+   Tutti i dati restano nel telefono (localStorage).
+   ========================================================= */
+
+const CHIAVE = "diarioDiBordo.v2";
+const GIORNI = ["Lunedì","Martedì","Mercoledì","Giovedì","Venerdì","Sabato","Domenica"];
+const MESI = ["gennaio","febbraio","marzo","aprile","maggio","giugno","luglio","agosto","settembre","ottobre","novembre","dicembre"];
+
+// ---------- STATO ----------
+/**
+ * {
+ *   versione: 2,
+ *   ragazzi: ["Nome 1", "Nome 2"],
+ *   settimana: { "0": [ {r:0, in:"08:00", out:"10:00"} ], ... "6": [] }   // 0 = lunedì
+ *   note: { "2026-10-05": "testo della nota" }
+ * }
+ */
+function statoIniziale(){
+  const settimana = {};
+  for(let i=0;i<7;i++) settimana[i] = [];
+  return { versione:2, ragazzi:["Ragazzo 1","Ragazzo 2"], settimana, note:{} };
+}
+
+function carica(){
+  try{
+    const raw = localStorage.getItem(CHIAVE);
+    if(raw){
+      const s = JSON.parse(raw), base = statoIniziale();
+      return {
+        ...base, ...s,
+        ragazzi: Array.isArray(s.ragazzi) && s.ragazzi.length===2 ? s.ragazzi : base.ragazzi,
+        settimana: { ...base.settimana, ...(s.settimana||{}) },
+        note: s.note || {}
+      };
+    }
+  }catch(e){ console.warn("Caricamento fallito", e); }
+  return statoIniziale();
+}
+let stato = carica();
+
+function salva(){
+  try{ localStorage.setItem(CHIAVE, JSON.stringify(stato)); }
+  catch(e){ toast("⚠️ Impossibile salvare"); }
+}
+// chiede al browser di non cancellare i dati quando lo spazio scarseggia
+if(navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{});
+
+// ---------- UTILITÀ ----------
+const pad = n => String(n).padStart(2,"0");
+const chiave = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;   // data locale → "YYYY-MM-DD"
+const daChiave = k => { const [y,m,d] = k.split("-").map(Number); return new Date(y,m-1,d); };
+const oggi = () => { const d = new Date(); d.setHours(0,0,0,0); return d; };
+const giornoSett = d => (d.getDay()+6)%7;                    // lunedì = 0 … domenica = 6
+const minuti = hhmm => { if(!hhmm) return null; const [h,m] = hhmm.split(":").map(Number); return h*60+m; };
+const durata = f => Math.max(0, (minuti(f.out)||0) - (minuti(f.in)||0));
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+/** 150 → "2h 30" ; 120 → "2h" ; 45 → "45m" */
+function fmt(min){
+  const h = Math.floor(min/60), m = Math.round(min%60);
+  if(h===0) return `${m}m`;
+  return `${h}h${m ? " "+pad(m) : ""}`;
+}
+function dataLunga(d){
+  const s = d.toLocaleDateString("it-IT",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+  return s.charAt(0).toUpperCase()+s.slice(1);
+}
+const nome = r => esc(stato.ragazzi[r]);
+
+// ---------- NAVIGAZIONE ----------
+let scheda = "sett";
+let meseCal = new Date(oggi().getFullYear(), oggi().getMonth(), 1);
+
+document.querySelectorAll("#nav button").forEach(b => b.addEventListener("click", ()=>{
+  scheda = b.dataset.tab; render(); window.scrollTo(0,0);
+}));
+
+function render(){
+  document.querySelectorAll("#nav button").forEach(b => b.classList.toggle("on", b.dataset.tab===scheda));
+  const info = {
+    sett:["La Settimana","Orario con i due ragazzi"],
+    cal: ["Il Calendario","Note di bordo per ogni giorno"],
+    imp: ["La Stiva","Nomi e backup"]
+  }[scheda];
+  document.getElementById("titolo").textContent = info[0];
+  document.getElementById("sottotitolo").textContent = info[1];
+  document.getElementById("app").innerHTML = ({sett:viewSett, cal:viewCal, imp:viewImp})[scheda]();
+  ({sett:bindSett, cal:bindCal, imp:bindImp})[scheda]();
+}
+
+// =========================================================
+// SEZIONE 1 — SETTIMANA
+// =========================================================
+function viewSett(){
+  // totali per ragazzo
+  const tot = [0,0];
+  for(let g=0; g<7; g++) for(const f of stato.settimana[g]) tot[f.r] += durata(f);
+
+  const riepilogo = `
+    <div class="card">
+      <h2 class="pirata">Bottino della settimana</h2>
+      <div class="bottino">
+        <div class="cassa r0"><b>${fmt(tot[0])}</b><span>${nome(0)}</span></div>
+        <div class="cassa r1"><b>${fmt(tot[1])}</b><span>${nome(1)}</span></div>
+      </div>
+      <div class="totale">Totale: ${fmt(tot[0]+tot[1])}</div>
+    </div>`;
+
+  const gOggi = giornoSett(oggi());
+  const giorni = GIORNI.map((g,i)=>{
+    const fasce = stato.settimana[i];
+    const totG = fasce.reduce((s,f)=>s+durata(f),0);
+    const righe = fasce.length
+      ? fasce.map((f,j)=>`
+          <button class="fascia r${f.r}" data-g="${i}" data-j="${j}">
+            <span class="ora">${f.in} – ${f.out}</span>
+            <span class="chi">${nome(f.r)}</span>
+            <span class="dur">${fmt(durata(f))}</span>
+          </button>`).join("")
+      : `<div class="libero">⚓ In porto: nessun orario</div>`;
+    return `
+      <div class="card giorno ${i===gOggi?"oggi":""}">
+        <div class="g-head">
+          <h3 class="pirata">${g}${i===gOggi?'<span class="badge-oggi">OGGI</span>':""}</h3>
+          <span class="muted small" style="font-weight:700">${totG?fmt(totG):""}</span>
+        </div>
+        ${righe}
+        <button class="aggiungi" data-add="${i}">+ Aggiungi orario</button>
+      </div>`;
+  }).join("");
+
+  return riepilogo + giorni;
+}
+function bindSett(){
+  document.querySelectorAll("[data-add]").forEach(b => b.onclick = ()=>apriFascia(Number(b.dataset.add), null));
+  document.querySelectorAll(".fascia").forEach(b => b.onclick = ()=>apriFascia(Number(b.dataset.g), Number(b.dataset.j)));
+}
+
+// ---------- Editor fascia oraria ----------
+let ed = null;   // { g, j, r, in, out }  (j = null se nuova)
+
+function apriFascia(g, j){
+  const f = j===null ? null : stato.settimana[g][j];
+  // per una fascia nuova propongo come inizio la fine dell'ultima del giorno
+  const ultima = stato.settimana[g].at(-1);
+  ed = f ? { g, j, ...f } : { g, j:null, r:0, in: ultima ? ultima.out : "08:00", out:"" };
+  disegnaFascia();
+  apriFoglio();
+}
+function disegnaFascia(){
+  document.getElementById("sheet").innerHTML = `
+    <div class="maniglia"></div>
+    <h3 class="pirata">${GIORNI[ed.g]}</h3>
+    <div class="muted small">${ed.j===null ? "Nuovo orario" : "Modifica orario"}</div>
+
+    <label class="f">Con chi?</label>
+    <div class="scelta">
+      <button class="r0 ${ed.r===0?"on":""}" data-r="0"><span class="pallino" style="background:var(--r0)"></span>${nome(0)}</button>
+      <button class="r1 ${ed.r===1?"on":""}" data-r="1"><span class="pallino" style="background:var(--r1)"></span>${nome(1)}</button>
+    </div>
+
+    <label class="f">Orario</label>
+    <div class="orari">
+      <input type="time" id="fIn" value="${ed.in||""}" aria-label="Inizio">
+      <span class="muted">→</span>
+      <input type="time" id="fOut" value="${ed.out||""}" aria-label="Fine">
+    </div>
+
+    <div class="azioni ${ed.j===null?"solo":""}">
+      ${ed.j===null ? "" : `<button class="btn btn-ghost btn-danger" id="elimina">Elimina</button>`}
+      <button class="btn btn-prim pirata" id="salva" style="font-size:20px">Salva</button>
+    </div>`;
+
+  document.querySelectorAll(".scelta button").forEach(b => b.onclick = ()=>{
+    leggiOrari(); ed.r = Number(b.dataset.r); disegnaFascia();
+  });
+  document.getElementById("salva").onclick = salvaFascia;
+  const el = document.getElementById("elimina");
+  if(el) el.onclick = ()=>{
+    stato.settimana[ed.g].splice(ed.j,1); salva(); chiudiFoglio(); toast("Orario eliminato"); render();
+  };
+}
+function leggiOrari(){ ed.in = document.getElementById("fIn").value; ed.out = document.getElementById("fOut").value; }
+
+function salvaFascia(){
+  leggiOrari();
+  if(!ed.in || !ed.out){ toast("Metti inizio e fine"); return; }
+  if(minuti(ed.out) <= minuti(ed.in)){ toast("La fine deve essere dopo l'inizio ⚠️"); return; }
+  const f = { r:ed.r, in:ed.in, out:ed.out };
+  const lista = stato.settimana[ed.g];
+  if(ed.j===null) lista.push(f); else lista[ed.j] = f;
+  lista.sort((a,b)=>minuti(a.in)-minuti(b.in));     // sempre in ordine di orario
+  salva(); chiudiFoglio(); toast("Salvato ✓"); render();
+}
+
+// =========================================================
+// SEZIONE 2 — CALENDARIO CON NOTE
+// =========================================================
+function viewCal(){
+  const y = meseCal.getFullYear(), m = meseCal.getMonth();
+  const giorniMese = new Date(y, m+1, 0).getDate();
+  const offset = giornoSett(new Date(y, m, 1));
+  const kOggi = chiave(oggi());
+
+  let celle = ["L","M","M","G","V","S","D"].map(g=>`<div class="dow">${g}</div>`).join("");
+  for(let i=0;i<offset;i++) celle += `<div class="d vuoto"></div>`;
+  for(let g=1; g<=giorniMese; g++){
+    const d = new Date(y,m,g), k = chiave(d);
+    const cls = ["d"];
+    if(k===kOggi) cls.push("oggi");
+    if(giornoSett(d)===6) cls.push("dom");
+    if(stato.note[k]) cls.push("nota");
+    celle += `<button class="${cls.join(" ")}" data-k="${k}">${g}</button>`;
+  }
+
+  // note del mese, in ordine
+  const prefisso = `${y}-${pad(m+1)}-`;
+  const noteMese = Object.keys(stato.note).filter(k=>k.startsWith(prefisso)).sort();
+  const lista = noteMese.length
+    ? noteMese.map(k=>`<button class="nota-riga" data-k="${k}"><b>${dataLunga(daChiave(k))}</b><span>${esc(stato.note[k])}</span></button>`).join("")
+    : `<div class="muted small">Nessuna nota questo mese. Tocca un giorno per scriverne una.</div>`;
+
+  return `
+    <div class="card">
+      <div class="cal-nav">
+        <button class="icon-btn" id="prec" aria-label="Mese precedente">‹</button>
+        <h2 class="pirata">${MESI[m]} ${y}</h2>
+        <button class="icon-btn" id="succ" aria-label="Mese successivo">›</button>
+      </div>
+      <div class="cal">${celle}</div>
+      <button class="btn btn-ghost btn-wide" id="vaiOggi" style="margin-top:12px;min-height:40px">Torna a oggi</button>
+    </div>
+    <div class="card">
+      <h2 class="pirata">Note del mese</h2>
+      ${lista}
+    </div>`;
+}
+function bindCal(){
+  const sposta = n => { meseCal = new Date(meseCal.getFullYear(), meseCal.getMonth()+n, 1); render(); };
+  document.getElementById("prec").onclick = ()=>sposta(-1);
+  document.getElementById("succ").onclick = ()=>sposta(1);
+  document.getElementById("vaiOggi").onclick = ()=>{ meseCal = new Date(oggi().getFullYear(), oggi().getMonth(), 1); render(); };
+  document.querySelectorAll("[data-k]").forEach(b => b.onclick = ()=>apriNota(b.dataset.k));
+}
+
+function apriNota(k){
+  const testo = stato.note[k] || "";
+  document.getElementById("sheet").innerHTML = `
+    <div class="maniglia"></div>
+    <h3 class="pirata">${dataLunga(daChiave(k))}</h3>
+    <label class="f" for="testoNota">Nota di bordo</label>
+    <textarea id="testoNota" placeholder="Es. uscita didattica, colloquio con i genitori, riunione…">${esc(testo)}</textarea>
+    <div class="azioni ${testo?"":"solo"}">
+      ${testo ? `<button class="btn btn-ghost btn-danger" id="elimina">Elimina</button>` : ""}
+      <button class="btn btn-prim pirata" id="salva" style="font-size:20px">Salva nota</button>
+    </div>`;
+  document.getElementById("salva").onclick = ()=>{
+    const t = document.getElementById("testoNota").value.trim();
+    if(t) stato.note[k] = t; else delete stato.note[k];
+    salva(); chiudiFoglio(); toast(t ? "Nota salvata ✓" : "Nota eliminata"); render();
+  };
+  const el = document.getElementById("elimina");
+  if(el) el.onclick = ()=>{ delete stato.note[k]; salva(); chiudiFoglio(); toast("Nota eliminata"); render(); };
+  apriFoglio();
+}
+
+// =========================================================
+// SEZIONE 3 — IMPOSTAZIONI
+// =========================================================
+function viewImp(){
+  return `
+    <div class="card">
+      <h2 class="pirata">La ciurma</h2>
+      <label class="f" for="n0"><span class="pallino" style="background:var(--r0)"></span>Primo ragazzo</label>
+      <input type="text" id="n0" value="${nome(0)}" maxlength="20">
+      <label class="f" for="n1"><span class="pallino" style="background:var(--r1)"></span>Secondo ragazzo</label>
+      <input type="text" id="n1" value="${nome(1)}" maxlength="20">
+      <button class="btn btn-oro btn-wide" id="salvaNomi" style="margin-top:16px">Salva nomi</button>
+    </div>
+
+    <div class="card">
+      <h2 class="pirata">Forziere di backup</h2>
+      <p class="small muted" style="margin-top:0">I dati restano solo su questo telefono. Ogni tanto scarica un backup e salvalo su Drive o mandalo su WhatsApp.</p>
+      <button class="btn btn-oro btn-wide" id="esporta">⬇ Scarica backup</button>
+      <button class="btn btn-ghost btn-wide" id="importaBtn" style="margin-top:10px">⬆ Ripristina da backup</button>
+      <input type="file" id="importa" accept=".json,application/json" hidden>
+    </div>
+
+    <div class="card">
+      <h2 class="pirata">Zona tempesta</h2>
+      <button class="btn btn-ghost btn-wide btn-danger" id="svuotaSett">Svuota l'orario della settimana</button>
+      <button class="btn btn-ghost btn-wide btn-danger" id="cancella" style="margin-top:10px">Cancella tutti i dati</button>
+    </div>
+    <p class="small muted" style="text-align:center">Diario di Bordo · v2 · funziona anche offline</p>`;
+}
+function bindImp(){
+  document.getElementById("salvaNomi").onclick = ()=>{
+    stato.ragazzi = [
+      document.getElementById("n0").value.trim() || "Ragazzo 1",
+      document.getElementById("n1").value.trim() || "Ragazzo 2"
+    ];
+    salva(); toast("Nomi salvati ✓"); render();
+  };
+  document.getElementById("esporta").onclick = esportaBackup;
+  const input = document.getElementById("importa");
+  document.getElementById("importaBtn").onclick = ()=>input.click();
+  input.onchange = ()=>{ if(input.files[0]) importaBackup(input.files[0]); };
+  document.getElementById("svuotaSett").onclick = ()=>{
+    if(confirm("Cancellare tutti gli orari della settimana? Le note del calendario restano.")){
+      stato.settimana = statoIniziale().settimana; salva(); toast("Settimana svuotata"); render();
+    }
+  };
+  document.getElementById("cancella").onclick = ()=>{
+    if(confirm("Sicura? Orari, note e nomi verranno cancellati.\n\nConsiglio: scarica prima un backup.")){
+      stato = statoIniziale(); salva(); toast("Dati cancellati"); render();
+    }
+  };
+}
+
+function esportaBackup(){
+  const blob = new Blob([JSON.stringify(stato,null,2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = `diario-di-bordo-${chiave(new Date())}.json`;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 2000);
+  toast("Backup scaricato ⬇");
+}
+function importaBackup(file){
+  const r = new FileReader();
+  r.onload = ()=>{
+    try{
+      const s = JSON.parse(r.result);
+      if(!s || typeof s.settimana!=="object" || typeof s.note!=="object") throw new Error("formato");
+      if(!confirm("Sostituire i dati attuali con quelli del backup?")) return;
+      localStorage.setItem(CHIAVE, JSON.stringify(s));
+      stato = carica(); toast("Backup ripristinato ✓"); render();
+    }catch(e){ toast("File di backup non valido"); }
+  };
+  r.readAsText(file);
+}
+
+// =========================================================
+// FOGLIO DAL BASSO (apri/chiudi) + tasto indietro Android
+// =========================================================
+let foglioAperto = false;
+function apriFoglio(){
+  document.getElementById("overlay").classList.add("open");
+  document.body.style.overflow = "hidden";
+  foglioAperto = true;
+  history.pushState({foglio:true}, "");   // "indietro" chiude il foglio, non l'app
+}
+function chiudiFoglio(daBack=false){
+  document.getElementById("overlay").classList.remove("open");
+  document.body.style.overflow = "";
+  foglioAperto = false; ed = null;
+  if(!daBack && history.state && history.state.foglio) history.back();
+}
+window.addEventListener("popstate", ()=>{ if(foglioAperto) chiudiFoglio(true); });
+document.getElementById("overlay").addEventListener("click", e=>{ if(e.target.id==="overlay") chiudiFoglio(); });
+
+// ---------- TOAST ----------
+let _t;
+function toast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  clearTimeout(_t); _t = setTimeout(()=>t.classList.remove("show"), 2200);
+}
+
+// ---------- AVVIO ----------
+render();
+document.addEventListener("visibilitychange", ()=>{ if(!document.hidden && !foglioAperto) render(); });
+if("serviceWorker" in navigator && location.protocol.startsWith("http")){
+  navigator.serviceWorker.register("sw.js").catch(e=>console.warn("SW non registrato", e));
+}
+</script>
+</body>
+</html>
