@@ -120,8 +120,10 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
   align-items:flex-end;justify-content:center;padding-right:3px;line-height:1.05;
 }
 .planner .ora small{font-weight:600;opacity:.75;font-size:10px}
+.planner .ora.mezza{font-weight:600;opacity:.7}
+.planner .ora.intera,.planner .cella.intera{margin-top:4px}   /* piccolo stacco tra un'ora e l'altra */
 .planner .cella{
-  height:46px;border-radius:9px;background:var(--cella);
+  height:36px;border-radius:9px;background:var(--cella);
   border:1.5px solid var(--pergamena-2);
   display:flex;align-items:center;justify-content:center;padding:2px 3px;
   font-size:10.5px;font-weight:800;line-height:1.1;text-align:center;overflow:hidden;word-break:break-word;
@@ -132,7 +134,7 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 .cella.k1{background:var(--c1-soft);border-color:var(--c1);color:var(--c1)}
 .cella.k2{background:var(--c2-soft);border-color:var(--c2);color:var(--c2)}
 .cella.k3{background:var(--c3-soft);border-color:var(--c3);color:var(--c3)}
-@media (min-width:600px){ .planner .cella{font-size:13px;height:52px} .planner{grid-template-columns:56px repeat(6,minmax(0,1fr))} .planner .ora{font-size:13px} }
+@media (min-width:600px){ .planner .cella{font-size:13px;height:40px} .planner{grid-template-columns:56px repeat(6,minmax(0,1fr))} .planner .ora{font-size:13px} }
 
 /* ---------- BOTTINO (totali) ---------- */
 .bottino{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -242,8 +244,8 @@ nav svg{width:24px;height:24px}
 <script>
 "use strict";
 /* =========================================================
-   DIARIO DI BORDO v3
-   - Planner: griglia Lunedì–Sabato × ore 8–18.
+   DIARIO DI BORDO v4
+   - Planner: griglia Lunedì–Sabato × mezz'ore 8:00–18:00.
      Ogni ora si colora con una di 4 voci:
      Ragazzo 1, Ragazzo 2, Programmazione, Riunione.
    - Calendario: note libere per qualsiasi giorno.
@@ -254,20 +256,34 @@ const CHIAVE = "diarioDiBordo.v3";
 const CHIAVE_V2 = "diarioDiBordo.v2";          // versione precedente (per migrare i dati)
 const GIORNI = ["Lunedì","Martedì","Mercoledì","Giovedì","Venerdì","Sabato"];
 const GIORNI_BREVI = ["LUN","MAR","MER","GIO","VEN","SAB"];
-const ORA_INIZIO = 8, ORA_FINE = 18;           // righe: 8–9, 9–10, … 17–18
+const INIZIO = 8*60, FINE = 18*60, PASSO = 30;  // righe ogni mezz'ora: 8:00, 8:30 … 17:30 (in minuti)
+/** 510 → "8:30" */
+const hhmm = m => `${Math.floor(m/60)}:${String(m%60).padStart(2,"0")}`;
 const MESI = ["gennaio","febbraio","marzo","aprile","maggio","giugno","luglio","agosto","settembre","ottobre","novembre","dicembre"];
 
 // ---------- STATO ----------
 /**
  * {
- *   versione: 3,
+ *   versione: 4,
  *   ragazzi: ["Nome 1", "Nome 2"],
- *   planner: { "0-8": 0, "2-14": 3, ... }   // "giorno-ora": categoria (0..3); giorno 0 = lunedì
+ *   planner: { "0-480": 0, "2-870": 3, ... }   // "giorno-minuti": categoria (0..3)
+ *                                              // giorno 0 = lunedì; 480 = 8:00, 870 = 14:30
  *   note: { "2026-10-05": "testo" }
  * }
  */
 function statoIniziale(){
-  return { versione:3, ragazzi:["Ragazzo 1","Ragazzo 2"], planner:{}, note:{} };
+  return { versione:4, ragazzi:["Ragazzo 1","Ragazzo 2"], planner:{}, note:{} };
+}
+
+/** v3 → v4: ogni ora intera ("0-8") diventa due mezz'ore ("0-480" e "0-510") */
+function migraOreInMezzore(planner){
+  const nuovo = {};
+  for(const [id, k] of Object.entries(planner || {})){
+    const [g, h] = id.split("-").map(Number);
+    nuovo[`${g}-${h*60}`] = k;
+    nuovo[`${g}-${h*60+30}`] = k;
+  }
+  return nuovo;
 }
 
 /** Converte i dati della v2 (fasce orarie) nella griglia oraria della v3 */
@@ -280,10 +296,10 @@ function migraDaV2(v2){
     if(Number(g) > 5) continue;                 // la domenica non c'è più
     for(const f of fasce){
       if(!f.in || !f.out) continue;
-      for(let h=ORA_INIZIO; h<ORA_FINE; h++){
-        // l'ora conta se la fascia ne copre almeno metà
-        const coperto = Math.min(min(f.out), (h+1)*60) - Math.max(min(f.in), h*60);
-        if(coperto >= 30) s.planner[`${g}-${h}`] = f.r;
+      for(let m=INIZIO; m<FINE; m+=PASSO){
+        // la mezz'ora conta se la fascia ne copre almeno metà
+        const coperto = Math.min(min(f.out), m+PASSO) - Math.max(min(f.in), m);
+        if(coperto >= PASSO/2) s.planner[`${g}-${m}`] = f.r;
       }
     }
   }
@@ -295,6 +311,11 @@ function carica(){
     const raw = localStorage.getItem(CHIAVE);
     if(raw){
       const s = JSON.parse(raw), base = statoIniziale();
+      if((s.versione || 3) < 4){                 // dati della v3 (ore intere): converti e salva
+        s.planner = migraOreInMezzore(s.planner);
+        s.versione = 4;
+        localStorage.setItem(CHIAVE, JSON.stringify(s));
+      }
       return {
         ...base, ...s,
         ragazzi: Array.isArray(s.ragazzi) && s.ragazzi.length===2 ? s.ragazzi : base.ragazzi,
@@ -336,7 +357,13 @@ const daChiave = k => { const [y,m,d] = k.split("-").map(Number); return new Dat
 const oggi = () => { const d = new Date(); d.setHours(0,0,0,0); return d; };
 const giornoSett = d => (d.getDay()+6)%7;      // lunedì = 0 … domenica = 6
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const ore = n => n === 1 ? "1 ora" : `${n} ore`;
+/** Numero di mezz'ore → testo: 0 → "0 ore", 1 → "30 min", 2 → "1 ora", 5 → "2h 30" */
+function ore(mezzore){
+  const h = Math.floor(mezzore/2), mezza = mezzore % 2 === 1;
+  if(h === 0) return mezza ? "30 min" : "0 ore";
+  if(mezza) return `${h}h 30`;
+  return h === 1 ? "1 ora" : `${h} ore`;
+}
 function dataLunga(d){
   const s = d.toLocaleDateString("it-IT",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
   return s.charAt(0).toUpperCase()+s.slice(1);
@@ -380,13 +407,17 @@ function viewSett(){
 
   // 2) griglia
   let griglia = `<div></div>` + GIORNI_BREVI.map((g,i)=>`<div class="gh ${i===gOggi?"oggi":""}">${g}</div>`).join("");
-  for(let h=ORA_INIZIO; h<ORA_FINE; h++){
-    griglia += `<div class="ora">${h}<small>${h+1}</small></div>`;
+  for(let m=INIZIO; m<FINE; m+=PASSO){
+    const mezza = m % 60 !== 0;                 // riga delle :30 → stile più leggero
+    griglia += `<div class="ora ${mezza?"mezza":"intera"}">${hhmm(m)}</div>`;
     for(let g=0; g<6; g++){
-      const k = stato.planner[`${g}-${h}`];
+      const k = stato.planner[`${g}-${m}`];
       const piena = k !== undefined;
-      griglia += `<button class="cella ${piena?"k"+k:""} ${g===gOggi?"oggi":""}" data-c="${g}-${h}"
-        aria-label="${GIORNI[g]} ore ${h}">${piena ? esc(cat[k].corto) : ""}</button>`;
+      // se la mezz'ora sopra ha la stessa voce, non ripeto il nome: il blocco si legge meglio
+      const sopra = stato.planner[`${g}-${m-PASSO}`];
+      const testo = piena && sopra !== k ? esc(cat[k].corto) : "";
+      griglia += `<button class="cella ${piena?"k"+k:""} ${mezza?"mezza":"intera"} ${g===gOggi?"oggi":""}" data-c="${g}-${m}"
+        aria-label="${GIORNI[g]} ${hhmm(m)}–${hhmm(m+PASSO)}">${testo}</button>`;
     }
   }
 
@@ -528,7 +559,7 @@ function viewImp(){
       <button class="btn btn-ghost btn-wide btn-danger" id="svuotaPlanner">Svuota il planner</button>
       <button class="btn btn-ghost btn-wide btn-danger" id="cancella" style="margin-top:10px">Cancella tutti i dati</button>
     </div>
-    <p class="small muted" style="text-align:center">Diario di Bordo · v3 · funziona anche offline</p>`;
+    <p class="small muted" style="text-align:center">Diario di Bordo · v4 · funziona anche offline</p>`;
 }
 function bindImp(){
   document.getElementById("salvaNomi").onclick = ()=>{
