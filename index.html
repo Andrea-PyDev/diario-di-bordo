@@ -645,7 +645,21 @@ function toast(msg){
 render();
 document.addEventListener("visibilitychange", ()=>{ if(!document.hidden && !foglioAperto) render(); });
 if("serviceWorker" in navigator && location.protocol.startsWith("http")){
-  navigator.serviceWorker.register("sw.js").catch(e=>console.warn("SW non registrato", e));
+  // updateViaCache "none": controlla sempre sul server se c'è un sw.js nuovo
+  navigator.serviceWorker.register("sw.js", { updateViaCache: "none" })
+    .then(reg => {
+      // quando l'app torna in primo piano, controlla se c'è un aggiornamento
+      document.addEventListener("visibilitychange", ()=>{ if(!document.hidden) reg.update().catch(()=>{}); });
+    })
+    .catch(e=>console.warn("SW non registrato", e));
+  // se una nuova versione prende il controllo, ricarica la pagina una volta sola
+  const avevaGiaSW = !!navigator.serviceWorker.controller;
+  let ricaricato = false;
+  navigator.serviceWorker.addEventListener("controllerchange", ()=>{
+    if(!avevaGiaSW || ricaricato) return;   // prima installazione: niente ricarica
+    ricaricato = true;
+    location.reload();
+  });
 }
 </script>
 </body>
