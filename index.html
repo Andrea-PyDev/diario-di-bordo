@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#14324f">
-<meta name="description" content="Orario settimanale e note: il diario di bordo di Alessia">
+<meta name="description" content="Planner settimanale e note: il diario di bordo di Alessia">
 <title>Diario di Bordo</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
@@ -19,22 +19,26 @@
    ========================================================= */
 :root{
   --mare:#14324f; --mare-2:#1f4a73; --onda:#2f6e9e;
-  --pergamena:#f4e7c9; --pergamena-2:#ead7ac; --carta:#fbf3df;
+  --pergamena:#f4e7c9; --pergamena-2:#ead7ac; --carta:#fbf3df; --cella:#fffaf0;
   --inchiostro:#3a2716; --sbiadito:#7a6248;
   --oro:#d9a441; --oro-scuro:#a8761d; --rosso:#b8322a; --corda:#a07a4a;
   --ombra:0 2px 0 rgba(58,39,22,.15), 0 6px 18px rgba(58,39,22,.12);
-  /* colori dei due ragazzi */
-  --r0:#b8322a; --r0-soft:#f3d3cc;
-  --r1:#2f6e9e; --r1-soft:#cfe0ee;
+  /* colori delle 4 categorie: pieno + tenue */
+  --c0:#b8322a; --c0-soft:#f3d3cc;   /* ragazzo 1 */
+  --c1:#2f6e9e; --c1-soft:#cfe0ee;   /* ragazzo 2 */
+  --c2:#2e7d4f; --c2-soft:#d3ead9;   /* programmazione */
+  --c3:#7b4fa8; --c3-soft:#e4d6f2;   /* riunione */
 }
 @media (prefers-color-scheme: dark){
   :root{
-    --pergamena:#0e2236; --pergamena-2:#13304b; --carta:#1a3654;
+    --pergamena:#0e2236; --pergamena-2:#13304b; --carta:#1a3654; --cella:#14304c;
     --inchiostro:#f2e6cc; --sbiadito:#b9a98a;
     --mare:#0a1a2a; --mare-2:#11283f; --corda:#8c6a3f;
     --ombra:0 2px 0 rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.35);
-    --r0:#e0665c; --r0-soft:#4a2630;
-    --r1:#5ea3d6; --r1-soft:#1d4466;
+    --c0:#e8766c; --c0-soft:#5a2a30;
+    --c1:#6cb0e0; --c1-soft:#1f4a70;
+    --c2:#6fcf97; --c2-soft:#1f4a36;
+    --c3:#b893e0; --c3-soft:#3e2d5c;
   }
 }
 
@@ -56,21 +60,21 @@ body{
 header{
   position:sticky;top:0;z-index:5;color:#f7ead0;
   background:linear-gradient(180deg,var(--mare),var(--mare-2));
-  padding:calc(env(safe-area-inset-top) + 14px) 16px 22px;
+  padding:calc(env(safe-area-inset-top) + 12px) 16px 20px;
 }
 header::after{
   content:"";position:absolute;left:0;right:0;bottom:-11px;height:12px;transform:scaleY(-1);
   background:radial-gradient(circle at 10px -2px, transparent 10px, var(--mare-2) 11px) 0 0/20px 12px repeat-x;
 }
-.head-row{display:flex;align-items:center;gap:12px;max-width:640px;margin:0 auto}
+.head-row{display:flex;align-items:center;gap:12px;max-width:900px;margin:0 auto}
 header h1{margin:0;font-size:30px;line-height:1}
 header .sub{font-size:13px;opacity:.85;margin-top:3px}
 
-main{max-width:640px;margin:0 auto;padding:22px 16px calc(96px + env(safe-area-inset-bottom))}
+main{max-width:900px;margin:0 auto;padding:22px 12px calc(96px + env(safe-area-inset-bottom))}
 
 /* ---------- CARD pergamena con bordo a corda ---------- */
 .card{
-  background:var(--carta);border-radius:16px;padding:14px 16px;margin-bottom:12px;
+  background:var(--carta);border-radius:16px;padding:14px 14px;margin-bottom:12px;
   box-shadow:var(--ombra);outline:4px solid var(--carta);
   border:2px dashed color-mix(in srgb,var(--corda) 55%,transparent);
 }
@@ -88,33 +92,58 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 .btn-danger{color:var(--rosso)}
 .icon-btn{width:44px;height:44px;border-radius:12px;background:var(--pergamena-2);display:grid;place-items:center;font-size:22px;font-weight:800}
 
-/* ---------- RIEPILOGO SETTIMANA (bottino) ---------- */
-.bottino{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.cassa{border-radius:14px;padding:12px;text-align:center}
-.cassa b{display:block;font-size:26px;line-height:1.1}
-.cassa span{font-size:13px;font-weight:700}
-.cassa.r0{background:var(--r0-soft)} .cassa.r0 b{color:var(--r0)}
-.cassa.r1{background:var(--r1-soft)} .cassa.r1 b{color:var(--r1)}
-.totale{text-align:center;margin-top:10px;font-weight:700}
-
-/* ---------- GIORNO della settimana ---------- */
-.giorno{padding:12px 14px}
-.giorno.oggi{border-color:var(--rosso);border-style:solid}
-.g-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-.g-head h3{margin:0;font-size:24px}
-.badge-oggi{font-size:11px;font-weight:800;background:var(--rosso);color:#fff;padding:2px 8px;border-radius:99px;margin-left:8px;vertical-align:4px;font-family:"Nunito",sans-serif}
-.fascia{
-  display:flex;align-items:center;gap:10px;width:100%;text-align:left;
-  padding:10px 12px;border-radius:12px;margin-bottom:7px;font-weight:700;
-  border-left:6px solid;
+/* ---------- TAVOLOZZA (cosa segnare) ---------- */
+.passo{font-size:13px;font-weight:800;color:var(--sbiadito);margin:0 0 8px;text-transform:uppercase;letter-spacing:.5px}
+.tavolozza{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tav{
+  display:flex;align-items:center;gap:8px;padding:10px 10px;border-radius:12px;font-weight:800;font-size:15px;
+  border:3px solid transparent;text-align:left;min-height:48px;overflow:hidden;font-size:14px;
 }
-.fascia.r0{background:var(--r0-soft);border-color:var(--r0)}
-.fascia.r1{background:var(--r1-soft);border-color:var(--r1)}
-.fascia .ora{font-size:17px;font-weight:800;white-space:nowrap}
-.fascia .chi{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.fascia .dur{font-size:13px;color:var(--sbiadito)}
-.aggiungi{width:100%;padding:9px;border-radius:12px;border:2px dashed var(--pergamena-2);font-weight:700;color:var(--sbiadito)}
-.libero{font-size:14px;color:var(--sbiadito);margin:2px 0 8px}
+.tav span.t{overflow:hidden;text-overflow:ellipsis;min-width:0;letter-spacing:-.2px}
+.tav .pallino{flex:none}
+.tav.on{border-color:var(--inchiostro);box-shadow:var(--ombra)}
+.tav.gomma{grid-column:1 / -1;background:var(--pergamena);justify-content:center;font-size:14px}
+.k0{background:var(--c0-soft)} .k1{background:var(--c1-soft)} .k2{background:var(--c2-soft)} .k3{background:var(--c3-soft)}
+.pallino{display:inline-block;width:14px;height:14px;border-radius:50%}
+
+/* ---------- GRIGLIA PLANNER ---------- */
+.planner{
+  display:grid;grid-template-columns:38px repeat(6, minmax(0,1fr));gap:4px;
+  user-select:none;-webkit-user-select:none;
+}
+.planner .gh{ /* intestazione giorni */
+  text-align:center;font-size:12px;font-weight:800;color:var(--sbiadito);padding:4px 0 6px;letter-spacing:.5px;border-radius:8px;
+}
+.planner .gh.oggi{background:var(--rosso);color:#fff}
+.planner .ora{
+  font-size:11px;font-weight:800;color:var(--sbiadito);display:flex;flex-direction:column;
+  align-items:flex-end;justify-content:center;padding-right:3px;line-height:1.05;
+}
+.planner .ora small{font-weight:600;opacity:.75;font-size:10px}
+.planner .cella{
+  height:46px;border-radius:9px;background:var(--cella);
+  border:1.5px solid var(--pergamena-2);
+  display:flex;align-items:center;justify-content:center;padding:2px 3px;
+  font-size:10.5px;font-weight:800;line-height:1.1;text-align:center;overflow:hidden;word-break:break-word;
+}
+.planner .cella.oggi{border-color:color-mix(in srgb,var(--rosso) 45%,transparent)}
+.planner .cella:active{transform:scale(.94)}
+.cella.k0{background:var(--c0-soft);border-color:var(--c0);color:var(--c0)}
+.cella.k1{background:var(--c1-soft);border-color:var(--c1);color:var(--c1)}
+.cella.k2{background:var(--c2-soft);border-color:var(--c2);color:var(--c2)}
+.cella.k3{background:var(--c3-soft);border-color:var(--c3);color:var(--c3)}
+@media (min-width:600px){ .planner .cella{font-size:13px;height:52px} .planner{grid-template-columns:56px repeat(6,minmax(0,1fr))} .planner .ora{font-size:13px} }
+
+/* ---------- BOTTINO (totali) ---------- */
+.bottino{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cassa{border-radius:14px;padding:10px;text-align:center;border-left:6px solid}
+.cassa b{display:block;font-size:24px;line-height:1.1}
+.cassa span{font-size:13px;font-weight:700;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cassa.k0{border-color:var(--c0)} .cassa.k0 b{color:var(--c0)}
+.cassa.k1{border-color:var(--c1)} .cassa.k1 b{color:var(--c1)}
+.cassa.k2{border-color:var(--c2)} .cassa.k2 b{color:var(--c2)}
+.cassa.k3{border-color:var(--c3)} .cassa.k3 b{color:var(--c3)}
+.totale{text-align:center;margin-top:10px;font-weight:800}
 
 /* ---------- CALENDARIO ---------- */
 .cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px}
@@ -135,20 +164,12 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 
 /* ---------- FORM ---------- */
 label.f{display:block;font-weight:700;margin:14px 0 6px}
-input[type=time]{min-width:0}
-input[type=time],input[type=text],textarea{
+input[type=text],textarea{
   font:inherit;color:var(--inchiostro);width:100%;
   background:var(--pergamena);border:2px solid var(--pergamena-2);border-radius:12px;padding:11px 12px;
 }
 input:focus,textarea:focus{outline:none;border-color:var(--oro)}
 textarea{min-height:140px;resize:vertical}
-.orari{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:center}
-.scelta{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.scelta button{padding:14px 8px;border-radius:14px;font-weight:800;font-size:16px;border:3px solid transparent;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.scelta .r0{background:var(--r0-soft)} .scelta .r1{background:var(--r1-soft)}
-.scelta .r0.on{border-color:var(--r0)} .scelta .r1.on{border-color:var(--r1)}
-.pallino{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:-1px;margin-right:6px}
 
 /* ---------- FOGLIO DAL BASSO ---------- */
 .overlay{position:fixed;inset:0;background:rgba(10,20,30,.5);z-index:20;display:none;align-items:flex-end;justify-content:center}
@@ -204,7 +225,7 @@ nav svg{width:24px;height:24px}
   <button data-tab="sett">
     <!-- timone -->
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg>
-    Settimana
+    Planner
   </button>
   <button data-tab="cal">
     <!-- mappa -->
@@ -221,30 +242,52 @@ nav svg{width:24px;height:24px}
 <script>
 "use strict";
 /* =========================================================
-   DIARIO DI BORDO v2
-   - Settimana: orario fisso di 7 giorni, ogni fascia oraria
-     è assegnata al ragazzo 1 o al ragazzo 2.
+   DIARIO DI BORDO v3
+   - Planner: griglia Lunedì–Sabato × ore 8–18.
+     Ogni ora si colora con una di 4 voci:
+     Ragazzo 1, Ragazzo 2, Programmazione, Riunione.
    - Calendario: note libere per qualsiasi giorno.
    Tutti i dati restano nel telefono (localStorage).
    ========================================================= */
 
-const CHIAVE = "diarioDiBordo.v2";
-const GIORNI = ["Lunedì","Martedì","Mercoledì","Giovedì","Venerdì","Sabato","Domenica"];
+const CHIAVE = "diarioDiBordo.v3";
+const CHIAVE_V2 = "diarioDiBordo.v2";          // versione precedente (per migrare i dati)
+const GIORNI = ["Lunedì","Martedì","Mercoledì","Giovedì","Venerdì","Sabato"];
+const GIORNI_BREVI = ["LUN","MAR","MER","GIO","VEN","SAB"];
+const ORA_INIZIO = 8, ORA_FINE = 18;           // righe: 8–9, 9–10, … 17–18
 const MESI = ["gennaio","febbraio","marzo","aprile","maggio","giugno","luglio","agosto","settembre","ottobre","novembre","dicembre"];
 
 // ---------- STATO ----------
 /**
  * {
- *   versione: 2,
+ *   versione: 3,
  *   ragazzi: ["Nome 1", "Nome 2"],
- *   settimana: { "0": [ {r:0, in:"08:00", out:"10:00"} ], ... "6": [] }   // 0 = lunedì
- *   note: { "2026-10-05": "testo della nota" }
+ *   planner: { "0-8": 0, "2-14": 3, ... }   // "giorno-ora": categoria (0..3); giorno 0 = lunedì
+ *   note: { "2026-10-05": "testo" }
  * }
  */
 function statoIniziale(){
-  const settimana = {};
-  for(let i=0;i<7;i++) settimana[i] = [];
-  return { versione:2, ragazzi:["Ragazzo 1","Ragazzo 2"], settimana, note:{} };
+  return { versione:3, ragazzi:["Ragazzo 1","Ragazzo 2"], planner:{}, note:{} };
+}
+
+/** Converte i dati della v2 (fasce orarie) nella griglia oraria della v3 */
+function migraDaV2(v2){
+  const s = statoIniziale();
+  if(Array.isArray(v2.ragazzi) && v2.ragazzi.length===2) s.ragazzi = v2.ragazzi;
+  s.note = v2.note || {};
+  const min = t => { const [h,m] = t.split(":").map(Number); return h*60+m; };
+  for(const [g, fasce] of Object.entries(v2.settimana || {})){
+    if(Number(g) > 5) continue;                 // la domenica non c'è più
+    for(const f of fasce){
+      if(!f.in || !f.out) continue;
+      for(let h=ORA_INIZIO; h<ORA_FINE; h++){
+        // l'ora conta se la fascia ne copre almeno metà
+        const coperto = Math.min(min(f.out), (h+1)*60) - Math.max(min(f.in), h*60);
+        if(coperto >= 30) s.planner[`${g}-${h}`] = f.r;
+      }
+    }
+  }
+  return s;
 }
 
 function carica(){
@@ -255,9 +298,14 @@ function carica(){
       return {
         ...base, ...s,
         ragazzi: Array.isArray(s.ragazzi) && s.ragazzi.length===2 ? s.ragazzi : base.ragazzi,
-        settimana: { ...base.settimana, ...(s.settimana||{}) },
-        note: s.note || {}
+        planner: s.planner || {}, note: s.note || {}
       };
+    }
+    const vecchio = localStorage.getItem(CHIAVE_V2);
+    if(vecchio){
+      const s = migraDaV2(JSON.parse(vecchio));
+      localStorage.setItem(CHIAVE, JSON.stringify(s));
+      return s;
     }
   }catch(e){ console.warn("Caricamento fallito", e); }
   return statoIniziale();
@@ -268,34 +316,36 @@ function salva(){
   try{ localStorage.setItem(CHIAVE, JSON.stringify(stato)); }
   catch(e){ toast("⚠️ Impossibile salvare"); }
 }
-// chiede al browser di non cancellare i dati quando lo spazio scarseggia
 if(navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{});
+
+// ---------- CATEGORIE ----------
+/** Le 4 voci del planner: nome visibile e versione corta per le celle */
+function categorie(){
+  return [
+    { nome: stato.ragazzi[0], corto: stato.ragazzi[0] },
+    { nome: stato.ragazzi[1], corto: stato.ragazzi[1] },
+    { nome: "Programmazione", corto: "Progr." },
+    { nome: "Riunione", corto: "Riun." },
+  ];
+}
 
 // ---------- UTILITÀ ----------
 const pad = n => String(n).padStart(2,"0");
-const chiave = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;   // data locale → "YYYY-MM-DD"
+const chiave = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
 const daChiave = k => { const [y,m,d] = k.split("-").map(Number); return new Date(y,m-1,d); };
 const oggi = () => { const d = new Date(); d.setHours(0,0,0,0); return d; };
-const giornoSett = d => (d.getDay()+6)%7;                    // lunedì = 0 … domenica = 6
-const minuti = hhmm => { if(!hhmm) return null; const [h,m] = hhmm.split(":").map(Number); return h*60+m; };
-const durata = f => Math.max(0, (minuti(f.out)||0) - (minuti(f.in)||0));
+const giornoSett = d => (d.getDay()+6)%7;      // lunedì = 0 … domenica = 6
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-
-/** 150 → "2h 30" ; 120 → "2h" ; 45 → "45m" */
-function fmt(min){
-  const h = Math.floor(min/60), m = Math.round(min%60);
-  if(h===0) return `${m}m`;
-  return `${h}h${m ? " "+pad(m) : ""}`;
-}
+const ore = n => n === 1 ? "1 ora" : `${n} ore`;
 function dataLunga(d){
   const s = d.toLocaleDateString("it-IT",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
   return s.charAt(0).toUpperCase()+s.slice(1);
 }
-const nome = r => esc(stato.ragazzi[r]);
 
 // ---------- NAVIGAZIONE ----------
 let scheda = "sett";
 let meseCal = new Date(oggi().getFullYear(), oggi().getMonth(), 1);
+let pennello = 0;          // categoria selezionata (0..3) oppure -1 = gomma
 
 document.querySelectorAll("#nav button").forEach(b => b.addEventListener("click", ()=>{
   scheda = b.dataset.tab; render(); window.scrollTo(0,0);
@@ -304,7 +354,7 @@ document.querySelectorAll("#nav button").forEach(b => b.addEventListener("click"
 function render(){
   document.querySelectorAll("#nav button").forEach(b => b.classList.toggle("on", b.dataset.tab===scheda));
   const info = {
-    sett:["La Settimana","Orario con i due ragazzi"],
+    sett:["Planner Settimanale","La rotta della settimana"],
     cal: ["Il Calendario","Note di bordo per ogni giorno"],
     imp: ["La Stiva","Nomi e backup"]
   }[scheda];
@@ -315,108 +365,70 @@ function render(){
 }
 
 // =========================================================
-// SEZIONE 1 — SETTIMANA
+// SEZIONE 1 — PLANNER SETTIMANALE
 // =========================================================
 function viewSett(){
-  // totali per ragazzo
-  const tot = [0,0];
-  for(let g=0; g<7; g++) for(const f of stato.settimana[g]) tot[f.r] += durata(f);
+  const cat = categorie();
+  const gOggi = giornoSett(oggi());       // 6 = domenica: nessuna colonna evidenziata
 
-  const riepilogo = `
+  // 1) tavolozza
+  const tavolozza = cat.map((c,i)=>`
+      <button class="tav k${i} ${pennello===i?"on":""}" data-p="${i}">
+        <span class="pallino" style="background:var(--c${i})"></span><span class="t">${esc(c.nome)}</span>
+      </button>`).join("")
+    + `<button class="tav gomma ${pennello===-1?"on":""}" data-p="-1">🧽 Gomma (cancella)</button>`;
+
+  // 2) griglia
+  let griglia = `<div></div>` + GIORNI_BREVI.map((g,i)=>`<div class="gh ${i===gOggi?"oggi":""}">${g}</div>`).join("");
+  for(let h=ORA_INIZIO; h<ORA_FINE; h++){
+    griglia += `<div class="ora">${h}<small>${h+1}</small></div>`;
+    for(let g=0; g<6; g++){
+      const k = stato.planner[`${g}-${h}`];
+      const piena = k !== undefined;
+      griglia += `<button class="cella ${piena?"k"+k:""} ${g===gOggi?"oggi":""}" data-c="${g}-${h}"
+        aria-label="${GIORNI[g]} ore ${h}">${piena ? esc(cat[k].corto) : ""}</button>`;
+    }
+  }
+
+  // 3) totali
+  const tot = [0,0,0,0];
+  for(const k of Object.values(stato.planner)) tot[k]++;
+  const casse = cat.map((c,i)=>`<div class="cassa k${i} k${i}-bg" style="background:var(--c${i}-soft)"><b>${ore(tot[i])}</b><span>${esc(c.nome)}</span></div>`).join("");
+
+  return `
+    <div class="card">
+      <p class="passo">① Scegli cosa segnare</p>
+      <div class="tavolozza">${tavolozza}</div>
+    </div>
+    <div class="card" style="padding:12px 8px">
+      <p class="passo" style="padding-left:6px">② Tocca le ore</p>
+      <div class="planner" id="planner">${griglia}</div>
+    </div>
     <div class="card">
       <h2 class="pirata">Bottino della settimana</h2>
-      <div class="bottino">
-        <div class="cassa r0"><b>${fmt(tot[0])}</b><span>${nome(0)}</span></div>
-        <div class="cassa r1"><b>${fmt(tot[1])}</b><span>${nome(1)}</span></div>
-      </div>
-      <div class="totale">Totale: ${fmt(tot[0]+tot[1])}</div>
+      <div class="bottino">${casse}</div>
+      <div class="totale">Totale: ${ore(tot.reduce((a,b)=>a+b,0))}</div>
     </div>`;
-
-  const gOggi = giornoSett(oggi());
-  const giorni = GIORNI.map((g,i)=>{
-    const fasce = stato.settimana[i];
-    const totG = fasce.reduce((s,f)=>s+durata(f),0);
-    const righe = fasce.length
-      ? fasce.map((f,j)=>`
-          <button class="fascia r${f.r}" data-g="${i}" data-j="${j}">
-            <span class="ora">${f.in} – ${f.out}</span>
-            <span class="chi">${nome(f.r)}</span>
-            <span class="dur">${fmt(durata(f))}</span>
-          </button>`).join("")
-      : `<div class="libero">⚓ In porto: nessun orario</div>`;
-    return `
-      <div class="card giorno ${i===gOggi?"oggi":""}">
-        <div class="g-head">
-          <h3 class="pirata">${g}${i===gOggi?'<span class="badge-oggi">OGGI</span>':""}</h3>
-          <span class="muted small" style="font-weight:700">${totG?fmt(totG):""}</span>
-        </div>
-        ${righe}
-        <button class="aggiungi" data-add="${i}">+ Aggiungi orario</button>
-      </div>`;
-  }).join("");
-
-  return riepilogo + giorni;
 }
+
 function bindSett(){
-  document.querySelectorAll("[data-add]").forEach(b => b.onclick = ()=>apriFascia(Number(b.dataset.add), null));
-  document.querySelectorAll(".fascia").forEach(b => b.onclick = ()=>apriFascia(Number(b.dataset.g), Number(b.dataset.j)));
-}
-
-// ---------- Editor fascia oraria ----------
-let ed = null;   // { g, j, r, in, out }  (j = null se nuova)
-
-function apriFascia(g, j){
-  const f = j===null ? null : stato.settimana[g][j];
-  // per una fascia nuova propongo come inizio la fine dell'ultima del giorno
-  const ultima = stato.settimana[g].at(-1);
-  ed = f ? { g, j, ...f } : { g, j:null, r:0, in: ultima ? ultima.out : "08:00", out:"" };
-  disegnaFascia();
-  apriFoglio();
-}
-function disegnaFascia(){
-  document.getElementById("sheet").innerHTML = `
-    <div class="maniglia"></div>
-    <h3 class="pirata">${GIORNI[ed.g]}</h3>
-    <div class="muted small">${ed.j===null ? "Nuovo orario" : "Modifica orario"}</div>
-
-    <label class="f">Con chi?</label>
-    <div class="scelta">
-      <button class="r0 ${ed.r===0?"on":""}" data-r="0"><span class="pallino" style="background:var(--r0)"></span>${nome(0)}</button>
-      <button class="r1 ${ed.r===1?"on":""}" data-r="1"><span class="pallino" style="background:var(--r1)"></span>${nome(1)}</button>
-    </div>
-
-    <label class="f">Orario</label>
-    <div class="orari">
-      <input type="time" id="fIn" value="${ed.in||""}" aria-label="Inizio">
-      <span class="muted">→</span>
-      <input type="time" id="fOut" value="${ed.out||""}" aria-label="Fine">
-    </div>
-
-    <div class="azioni ${ed.j===null?"solo":""}">
-      ${ed.j===null ? "" : `<button class="btn btn-ghost btn-danger" id="elimina">Elimina</button>`}
-      <button class="btn btn-prim pirata" id="salva" style="font-size:20px">Salva</button>
-    </div>`;
-
-  document.querySelectorAll(".scelta button").forEach(b => b.onclick = ()=>{
-    leggiOrari(); ed.r = Number(b.dataset.r); disegnaFascia();
+  document.querySelectorAll(".tav").forEach(b => b.onclick = ()=>{
+    pennello = Number(b.dataset.p);
+    document.querySelectorAll(".tav").forEach(x => x.classList.toggle("on", x===b));
   });
-  document.getElementById("salva").onclick = salvaFascia;
-  const el = document.getElementById("elimina");
-  if(el) el.onclick = ()=>{
-    stato.settimana[ed.g].splice(ed.j,1); salva(); chiudiFoglio(); toast("Orario eliminato"); render();
-  };
+  document.querySelectorAll(".cella").forEach(c => c.onclick = ()=>coloraCella(c.dataset.c));
 }
-function leggiOrari(){ ed.in = document.getElementById("fIn").value; ed.out = document.getElementById("fOut").value; }
 
-function salvaFascia(){
-  leggiOrari();
-  if(!ed.in || !ed.out){ toast("Metti inizio e fine"); return; }
-  if(minuti(ed.out) <= minuti(ed.in)){ toast("La fine deve essere dopo l'inizio ⚠️"); return; }
-  const f = { r:ed.r, in:ed.in, out:ed.out };
-  const lista = stato.settimana[ed.g];
-  if(ed.j===null) lista.push(f); else lista[ed.j] = f;
-  lista.sort((a,b)=>minuti(a.in)-minuti(b.in));     // sempre in ordine di orario
-  salva(); chiudiFoglio(); toast("Salvato ✓"); render();
+/** Tocco su una cella: la colora con la voce scelta.
+ *  Se ha già quella voce (o è attiva la gomma) la svuota. */
+function coloraCella(id){
+  const attuale = stato.planner[id];
+  if(pennello === -1 || attuale === pennello) delete stato.planner[id];
+  else stato.planner[id] = pennello;
+  salva();
+  if(navigator.vibrate) navigator.vibrate(15);
+  const y = window.scrollY;           // ridisegna senza far saltare la pagina
+  render(); window.scrollTo(0, y);
 }
 
 // =========================================================
@@ -439,7 +451,6 @@ function viewCal(){
     celle += `<button class="${cls.join(" ")}" data-k="${k}">${g}</button>`;
   }
 
-  // note del mese, in ordine
   const prefisso = `${y}-${pad(m+1)}-`;
   const noteMese = Object.keys(stato.note).filter(k=>k.startsWith(prefisso)).sort();
   const lista = noteMese.length
@@ -497,10 +508,10 @@ function viewImp(){
   return `
     <div class="card">
       <h2 class="pirata">La ciurma</h2>
-      <label class="f" for="n0"><span class="pallino" style="background:var(--r0)"></span>Primo ragazzo</label>
-      <input type="text" id="n0" value="${nome(0)}" maxlength="20">
-      <label class="f" for="n1"><span class="pallino" style="background:var(--r1)"></span>Secondo ragazzo</label>
-      <input type="text" id="n1" value="${nome(1)}" maxlength="20">
+      <label class="f" for="n0"><span class="pallino" style="background:var(--c0);margin-right:6px;vertical-align:-1px"></span>Primo ragazzo</label>
+      <input type="text" id="n0" value="${esc(stato.ragazzi[0])}" maxlength="20">
+      <label class="f" for="n1"><span class="pallino" style="background:var(--c1);margin-right:6px;vertical-align:-1px"></span>Secondo ragazzo</label>
+      <input type="text" id="n1" value="${esc(stato.ragazzi[1])}" maxlength="20">
       <button class="btn btn-oro btn-wide" id="salvaNomi" style="margin-top:16px">Salva nomi</button>
     </div>
 
@@ -514,10 +525,10 @@ function viewImp(){
 
     <div class="card">
       <h2 class="pirata">Zona tempesta</h2>
-      <button class="btn btn-ghost btn-wide btn-danger" id="svuotaSett">Svuota l'orario della settimana</button>
+      <button class="btn btn-ghost btn-wide btn-danger" id="svuotaPlanner">Svuota il planner</button>
       <button class="btn btn-ghost btn-wide btn-danger" id="cancella" style="margin-top:10px">Cancella tutti i dati</button>
     </div>
-    <p class="small muted" style="text-align:center">Diario di Bordo · v2 · funziona anche offline</p>`;
+    <p class="small muted" style="text-align:center">Diario di Bordo · v3 · funziona anche offline</p>`;
 }
 function bindImp(){
   document.getElementById("salvaNomi").onclick = ()=>{
@@ -531,13 +542,13 @@ function bindImp(){
   const input = document.getElementById("importa");
   document.getElementById("importaBtn").onclick = ()=>input.click();
   input.onchange = ()=>{ if(input.files[0]) importaBackup(input.files[0]); };
-  document.getElementById("svuotaSett").onclick = ()=>{
-    if(confirm("Cancellare tutti gli orari della settimana? Le note del calendario restano.")){
-      stato.settimana = statoIniziale().settimana; salva(); toast("Settimana svuotata"); render();
+  document.getElementById("svuotaPlanner").onclick = ()=>{
+    if(confirm("Svuotare tutto il planner? Le note del calendario restano.")){
+      stato.planner = {}; salva(); toast("Planner svuotato"); render();
     }
   };
   document.getElementById("cancella").onclick = ()=>{
-    if(confirm("Sicura? Orari, note e nomi verranno cancellati.\n\nConsiglio: scarica prima un backup.")){
+    if(confirm("Sicura? Planner, note e nomi verranno cancellati.\n\nConsiglio: scarica prima un backup.")){
       stato = statoIniziale(); salva(); toast("Dati cancellati"); render();
     }
   };
@@ -556,8 +567,9 @@ function importaBackup(file){
   const r = new FileReader();
   r.onload = ()=>{
     try{
-      const s = JSON.parse(r.result);
-      if(!s || typeof s.settimana!=="object" || typeof s.note!=="object") throw new Error("formato");
+      let s = JSON.parse(r.result);
+      if(s && s.settimana && !s.planner) s = migraDaV2(s);     // accetta anche backup della v2
+      if(!s || typeof s.planner!=="object" || typeof s.note!=="object") throw new Error("formato");
       if(!confirm("Sostituire i dati attuali con quelli del backup?")) return;
       localStorage.setItem(CHIAVE, JSON.stringify(s));
       stato = carica(); toast("Backup ripristinato ✓"); render();
@@ -567,19 +579,19 @@ function importaBackup(file){
 }
 
 // =========================================================
-// FOGLIO DAL BASSO (apri/chiudi) + tasto indietro Android
+// FOGLIO DAL BASSO + tasto indietro Android
 // =========================================================
 let foglioAperto = false;
 function apriFoglio(){
   document.getElementById("overlay").classList.add("open");
   document.body.style.overflow = "hidden";
   foglioAperto = true;
-  history.pushState({foglio:true}, "");   // "indietro" chiude il foglio, non l'app
+  history.pushState({foglio:true}, "");
 }
 function chiudiFoglio(daBack=false){
   document.getElementById("overlay").classList.remove("open");
   document.body.style.overflow = "";
-  foglioAperto = false; ed = null;
+  foglioAperto = false;
   if(!daBack && history.state && history.state.foglio) history.back();
 }
 window.addEventListener("popstate", ()=>{ if(foglioAperto) chiudiFoglio(true); });

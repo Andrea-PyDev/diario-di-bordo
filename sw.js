@@ -1,6 +1,6 @@
 /* Service worker: salva l'app nella cache così funziona anche senza internet.
    Quando modifichi l'app, cambia VERSIONE per forzare l'aggiornamento. */
-const VERSIONE = "diario-v2";
+const VERSIONE = "diario-v3";
 const FILE_APP = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./icon-maskable-512.png"];
 
 self.addEventListener("install", e => {

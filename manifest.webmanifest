@@ -1,7 +1,7 @@
 {
   "name": "Diario di Bordo",
   "short_name": "Diario",
-  "description": "Orario settimanale con i due ragazzi e note sul calendario",
+  "description": "Planner settimanale con i due ragazzi e note sul calendario",
   "lang": "it",
   "start_url": "./",
   "scope": "./",
