@@ -1,7 +1,7 @@
 {
   "name": "Diario di Bordo",
   "short_name": "Diario",
-  "description": "Planner settimanale con i due ragazzi e note sul calendario",
+  "description": "Planner settimanale, calendario con eventi e diario, cose da fare: per insegnanti",
   "lang": "it",
   "start_url": "./",
   "scope": "./",

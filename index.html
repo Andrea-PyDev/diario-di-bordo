@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#14324f">
-<meta name="description" content="Planner settimanale e note: il diario di bordo di Alessia">
+<meta name="description" content="Planner settimanale, calendario, diario e cose da fare per insegnanti">
 <title>Diario di Bordo</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
@@ -21,19 +21,19 @@
   --mare:#14324f; --mare-2:#1f4a73; --onda:#2f6e9e;
   --pergamena:#f4e7c9; --pergamena-2:#ead7ac; --carta:#fbf3df; --cella:#fffaf0;
   --inchiostro:#3a2716; --sbiadito:#7a6248;
-  --oro:#d9a441; --oro-scuro:#a8761d; --rosso:#b8322a; --corda:#a07a4a;
+  --oro:#d9a441; --oro-scuro:#a8761d; --rosso:#b8322a; --verde:#2e7d4f; --corda:#a07a4a;
   --ombra:0 2px 0 rgba(58,39,22,.15), 0 6px 18px rgba(58,39,22,.12);
-  /* colori delle 4 categorie: pieno + tenue */
-  --c0:#b8322a; --c0-soft:#f3d3cc;   /* ragazzo 1 */
-  --c1:#2f6e9e; --c1-soft:#cfe0ee;   /* ragazzo 2 */
-  --c2:#2e7d4f; --c2-soft:#d3ead9;   /* programmazione */
-  --c3:#7b4fa8; --c3-soft:#e4d6f2;   /* riunione */
+  /* un colore per ogni ragazzo (fino a 4): pieno + tenue */
+  --c0:#b8322a; --c0-soft:#f3d3cc;
+  --c1:#2f6e9e; --c1-soft:#cfe0ee;
+  --c2:#2e7d4f; --c2-soft:#d3ead9;
+  --c3:#7b4fa8; --c3-soft:#e4d6f2;
 }
 @media (prefers-color-scheme: dark){
   :root{
     --pergamena:#0e2236; --pergamena-2:#13304b; --carta:#1a3654; --cella:#14304c;
     --inchiostro:#f2e6cc; --sbiadito:#b9a98a;
-    --mare:#0a1a2a; --mare-2:#11283f; --corda:#8c6a3f;
+    --mare:#0a1a2a; --mare-2:#11283f; --corda:#8c6a3f; --verde:#6fcf97;
     --ombra:0 2px 0 rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.35);
     --c0:#e8766c; --c0-soft:#5a2a30;
     --c1:#6cb0e0; --c1-soft:#1f4a70;
@@ -55,6 +55,7 @@ body{
 }
 .pirata{font-family:"Pirata One",Georgia,serif;font-weight:400;letter-spacing:.5px}
 .muted{color:var(--sbiadito)} .small{font-size:13px}
+.hidden{display:none!important}
 
 /* ---------- HEADER con onde ---------- */
 header{
@@ -74,11 +75,12 @@ main{max-width:900px;margin:0 auto;padding:22px 12px calc(96px + env(safe-area-i
 
 /* ---------- CARD pergamena con bordo a corda ---------- */
 .card{
-  background:var(--carta);border-radius:16px;padding:14px 14px;margin-bottom:12px;
+  background:var(--carta);border-radius:16px;padding:14px;margin-bottom:12px;
   box-shadow:var(--ombra);outline:4px solid var(--carta);
   border:2px dashed color-mix(in srgb,var(--corda) 55%,transparent);
 }
 .card h2{margin:0 0 8px;font-size:24px}
+.passo{font-size:13px;font-weight:800;color:var(--sbiadito);margin:0 0 8px;text-transform:uppercase;letter-spacing:.5px}
 
 /* ---------- BOTTONI ---------- */
 button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
@@ -90,42 +92,36 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 .btn-ghost{background:transparent;border:2px solid var(--pergamena-2)}
 .btn-wide{width:100%}
 .btn-danger{color:var(--rosso)}
-.icon-btn{width:44px;height:44px;border-radius:12px;background:var(--pergamena-2);display:grid;place-items:center;font-size:22px;font-weight:800}
+.btn-sm{min-height:36px;padding:7px 12px;font-size:14px}
+.icon-btn{width:44px;height:44px;border-radius:12px;background:var(--pergamena-2);display:grid;place-items:center;font-size:22px;font-weight:800;flex:none}
+.x-btn{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:18px;color:var(--sbiadito);flex:none}
+
+/* ---------- CHIP generiche ---------- */
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{padding:8px 12px;border-radius:99px;background:var(--pergamena);font-weight:700;font-size:14px;border:2px solid transparent}
+.chip.on{border-color:var(--inchiostro);background:var(--carta)}
+.pallino{display:inline-block;width:12px;height:12px;border-radius:50%;flex:none}
+.tag{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:800;padding:2px 9px;border-radius:99px}
 
 /* ---------- TAVOLOZZA (cosa segnare) ---------- */
-.passo{font-size:13px;font-weight:800;color:var(--sbiadito);margin:0 0 8px;text-transform:uppercase;letter-spacing:.5px}
 .tavolozza{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.tav{
-  display:flex;align-items:center;gap:8px;padding:10px 10px;border-radius:12px;font-weight:800;font-size:15px;
-  border:3px solid transparent;text-align:left;min-height:48px;overflow:hidden;font-size:14px;
-}
-.tav span.t{overflow:hidden;text-overflow:ellipsis;min-width:0;letter-spacing:-.2px}
-.tav .pallino{flex:none}
+.tav{display:flex;align-items:center;gap:8px;padding:10px;border-radius:12px;font-weight:800;font-size:15px;
+  border:3px solid transparent;text-align:left;min-height:48px;overflow:hidden}
+.tav span.t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .tav.on{border-color:var(--inchiostro);box-shadow:var(--ombra)}
 .tav.gomma{grid-column:1 / -1;background:var(--pergamena);justify-content:center;font-size:14px}
 .k0{background:var(--c0-soft)} .k1{background:var(--c1-soft)} .k2{background:var(--c2-soft)} .k3{background:var(--c3-soft)}
-.pallino{display:inline-block;width:14px;height:14px;border-radius:50%}
 
 /* ---------- GRIGLIA PLANNER ---------- */
-.planner{
-  display:grid;grid-template-columns:38px repeat(6, minmax(0,1fr));gap:4px;
-  user-select:none;-webkit-user-select:none;
-}
-.planner .gh{ /* intestazione giorni */
-  text-align:center;font-size:12px;font-weight:800;color:var(--sbiadito);padding:4px 0 6px;letter-spacing:.5px;border-radius:8px;
-}
+.planner{display:grid;grid-template-columns:38px repeat(6, minmax(0,1fr));gap:4px;user-select:none;-webkit-user-select:none}
+.planner .gh{text-align:center;font-size:12px;font-weight:800;color:var(--sbiadito);padding:4px 0 6px;letter-spacing:.5px;border-radius:8px}
 .planner .gh.oggi{background:var(--rosso);color:#fff}
-.planner .ora{
-  font-size:11px;font-weight:800;color:var(--sbiadito);display:flex;flex-direction:column;
-  align-items:flex-end;justify-content:center;padding-right:3px;line-height:1.05;
-}
+.planner .ora{font-size:11px;font-weight:800;color:var(--sbiadito);display:flex;flex-direction:column;
+  align-items:flex-end;justify-content:center;padding-right:3px;line-height:1.05}
 .planner .ora small{font-weight:600;opacity:.75;font-size:10px}
-.planner .cella{
-  height:48px;border-radius:9px;background:var(--cella);
-  border:1.5px solid var(--pergamena-2);
+.planner .cella{height:48px;border-radius:9px;background:var(--cella);border:1.5px solid var(--pergamena-2);
   display:flex;align-items:center;justify-content:center;padding:2px 3px;
-  font-size:10.5px;font-weight:800;line-height:1.1;text-align:center;overflow:hidden;word-break:break-word;
-}
+  font-size:10.5px;font-weight:800;line-height:1.1;text-align:center;overflow:hidden;word-break:break-word}
 .planner .cella.oggi{border-color:color-mix(in srgb,var(--rosso) 45%,transparent)}
 .planner .cella:active{transform:scale(.94)}
 .cella.k0{background:var(--c0-soft);border-color:var(--c0);color:var(--c0)}
@@ -136,6 +132,7 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 
 /* ---------- BOTTINO (totali) ---------- */
 .bottino{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.bottino.uno{grid-template-columns:1fr}
 .cassa{border-radius:14px;padding:10px;text-align:center;border-left:6px solid}
 .cassa b{display:block;font-size:24px;line-height:1.1}
 .cassa span{font-size:13px;font-weight:700;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -145,31 +142,84 @@ button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 .cassa.k3{border-color:var(--c3)} .cassa.k3 b{color:var(--c3)}
 .totale{text-align:center;margin-top:10px;font-weight:800}
 
+/* ---------- PROSSIMI IMPEGNI ---------- */
+.impegno{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:9px 2px;border-bottom:1px dashed var(--pergamena-2)}
+.impegno:last-child{border-bottom:0}
+.impegno .ico{font-size:22px;width:30px;text-align:center;flex:none}
+.impegno .quando{font-size:12px;font-weight:800;color:var(--rosso);text-transform:uppercase}
+.impegno .cosa{font-weight:700;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.impegno .txt{min-width:0;flex:1}
+
 /* ---------- CALENDARIO ---------- */
 .cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px}
 .cal-nav h2{margin:0;text-transform:capitalize;text-align:center}
 .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
 .cal .dow{text-align:center;font-size:12px;font-weight:800;color:var(--sbiadito);padding-bottom:4px}
-.cal .d{aspect-ratio:1/1;border-radius:10px;background:var(--pergamena);display:grid;place-items:center;
-  font-size:15px;font-weight:700;position:relative}
+.cal .d{aspect-ratio:1/1.18;border-radius:10px;background:var(--pergamena);display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-start;padding:5px 1px 3px;font-size:15px;font-weight:800;position:relative;gap:1px}
 .cal .d.vuoto{background:transparent}
-.cal .d.dom{color:var(--rosso)}
+.cal .d.dom .n{color:var(--rosso)}
 .cal .d.oggi{outline:2.5px solid var(--rosso)}
-.cal .d.nota{background:color-mix(in srgb,var(--oro) 35%,var(--pergamena))}
-.cal .d.nota::after{content:"";position:absolute;bottom:5px;width:6px;height:6px;border-radius:50%;background:var(--oro-scuro)}
-.nota-riga{display:block;width:100%;text-align:left;padding:11px 2px;border-bottom:1px dashed var(--pergamena-2)}
-.nota-riga:last-child{border-bottom:0}
-.nota-riga b{display:block;font-size:14px}
-.nota-riga span{font-size:14px;color:var(--sbiadito);white-space:pre-line}
+.cal .d.pieno{background:color-mix(in srgb,var(--oro) 26%,var(--pergamena))}
+.cal .d .ev{font-size:11px;line-height:1;letter-spacing:-1px}
+.cal .d .dots{display:flex;gap:2px;margin-top:auto}
+.cal .d .dots i{width:6px;height:6px;border-radius:50%}
+.legenda{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:12px;font-size:12px;color:var(--sbiadito)}
+
+/* riepilogo mese */
+.riep{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.riep .box{background:var(--pergamena);border-radius:12px;padding:10px}
+.riep .box b{font-size:20px;display:block}
+.riep .box span{font-size:12.5px;color:var(--sbiadito);font-weight:700}
+.riga-ragazzo{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px dashed var(--pergamena-2);font-size:14px}
+.riga-ragazzo:last-child{border-bottom:0}
+.riga-ragazzo .nome{font-weight:800;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ---------- PAGINA DEL GIORNO ---------- */
+.sezione{margin-top:18px}
+.sezione > .titolo{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.sezione > .titolo h4{margin:0;font-size:22px}
+.evento{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:12px;background:var(--pergamena);margin-bottom:7px}
+.evento .ico{font-size:20px;flex:none}
+.evento .corpo{flex:1;min-width:0;text-align:left}
+.evento .corpo b{font-size:14px}
+.evento .corpo div{font-size:14px;color:var(--sbiadito);white-space:pre-line;word-break:break-word}
+.form-evento{background:var(--pergamena);border-radius:14px;padding:12px;margin-top:4px}
+.tipi{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.tipo{display:flex;align-items:center;gap:6px;padding:8px 9px;border-radius:10px;background:var(--carta);font-weight:700;font-size:13.5px;border:2px solid transparent;text-align:left}
+.tipo.on{border-color:var(--inchiostro)}
+.diario{border-radius:14px;padding:12px;margin-bottom:10px;border-left:6px solid}
+.diario .nome{font-weight:800;margin-bottom:8px}
+.umori{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px}
+.umore{padding:8px 4px;border-radius:12px;background:var(--carta);font-weight:700;font-size:12.5px;border:2px solid transparent;display:flex;flex-direction:column;align-items:center;gap:2px}
+.umore .e{font-size:24px;line-height:1}
+.umore.on{border-color:var(--inchiostro)}
+
+/* ---------- COSE DA FARE ---------- */
+.todo{display:flex;align-items:center;gap:10px;padding:10px 2px;border-bottom:1px dashed var(--pergamena-2)}
+.todo:last-child{border-bottom:0}
+.spunta{width:30px;height:30px;border-radius:50%;border:2.5px solid var(--corda);display:grid;place-items:center;font-size:16px;font-weight:900;flex:none;color:#fff}
+.todo.fatto .spunta{background:var(--verde);border-color:var(--verde)}
+.todo .testo{flex:1;min-width:0;word-break:break-word}
+.todo.fatto .testo{text-decoration:line-through;color:var(--sbiadito)}
+.todo .scad{font-size:12px;font-weight:800;color:var(--sbiadito);white-space:nowrap}
+.todo .scad.tardi{color:var(--rosso)}
+.todo .scad.oggi{color:var(--verde)}
+.nuovo-todo{display:grid;grid-template-columns:1fr auto;gap:8px}
+.nuovo-todo .data{grid-column:1 / -1;display:flex;align-items:center;gap:8px}
 
 /* ---------- FORM ---------- */
 label.f{display:block;font-weight:700;margin:14px 0 6px}
-input[type=text],textarea{
-  font:inherit;color:var(--inchiostro);width:100%;
+input[type=text],input[type=date],textarea{
+  font:inherit;color:var(--inchiostro);width:100%;min-width:0;
   background:var(--pergamena);border:2px solid var(--pergamena-2);border-radius:12px;padding:11px 12px;
 }
+.form-evento textarea,.diario textarea,.diario input{background:var(--carta)}
 input:focus,textarea:focus{outline:none;border-color:var(--oro)}
-textarea{min-height:140px;resize:vertical}
+textarea{min-height:70px;resize:vertical}
+.numeri{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.numeri button{padding:12px 0;border-radius:12px;background:var(--pergamena);font-weight:800;font-size:18px;border:2.5px solid transparent}
+.numeri button.on{border-color:var(--inchiostro);background:var(--carta)}
 
 /* ---------- FOGLIO DAL BASSO ---------- */
 .overlay{position:fixed;inset:0;background:rgba(10,20,30,.5);z-index:20;display:none;align-items:flex-end;justify-content:center}
@@ -179,21 +229,29 @@ textarea{min-height:140px;resize:vertical}
 @keyframes su{from{transform:translateY(40px);opacity:.5}to{transform:none;opacity:1}}
 .maniglia{width:44px;height:5px;border-radius:9px;background:var(--pergamena-2);margin:4px auto 10px}
 .sheet h3{margin:0;font-size:28px}
-.azioni{display:grid;grid-template-columns:1fr 2fr;gap:10px;margin-top:18px}
-.azioni.solo{grid-template-columns:1fr}
+.sheet .fondo{position:sticky;bottom:calc(-18px - env(safe-area-inset-bottom));background:var(--carta);padding:12px 0 calc(4px + env(safe-area-inset-bottom));margin-top:16px}
+
+/* benvenuto */
+.benvenuto{text-align:center}
+.benvenuto .bussola{margin:6px auto 4px;display:block}
+.benvenuto h3{font-size:34px}
+.benvenuto .form{text-align:left}
 
 /* ---------- NAV IN BASSO ---------- */
 nav{position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--mare);
-  display:grid;grid-template-columns:repeat(3,1fr);
+  display:grid;grid-template-columns:repeat(4,1fr);
   padding:6px 6px calc(6px + env(safe-area-inset-bottom));border-top:3px solid var(--oro)}
-nav button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;color:#c9b996;font-size:12px;font-weight:700;border-radius:12px}
+nav button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;color:#c9b996;font-size:11.5px;font-weight:700;border-radius:12px;position:relative}
 nav button.on{color:#ffe6a8;background:rgba(255,255,255,.07)}
 nav svg{width:24px;height:24px}
+nav .badge{position:absolute;top:2px;right:calc(50% - 22px);background:var(--rosso);color:#fff;font-size:10px;font-weight:800;min-width:17px;height:17px;border-radius:9px;display:grid;place-items:center;padding:0 4px}
 
 .toast{position:fixed;left:50%;bottom:calc(86px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);
   background:var(--inchiostro);color:var(--pergamena);padding:11px 18px;border-radius:12px;font-weight:700;
   opacity:0;transition:.25s;z-index:30;pointer-events:none;max-width:90vw;text-align:center}
 .toast.show{opacity:1;transform:translateX(-50%)}
+.vuoto-msg{text-align:center;padding:14px 6px;color:var(--sbiadito);font-size:14px}
+.vuoto-msg .pirata{font-size:22px;color:var(--inchiostro);display:block}
 </style>
 </head>
 <body>
@@ -223,92 +281,90 @@ nav svg{width:24px;height:24px}
 
 <nav id="nav">
   <button data-tab="sett">
-    <!-- timone -->
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg>
     Planner
   </button>
   <button data-tab="cal">
-    <!-- mappa -->
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z"/><path d="M9 4v14M15 6v14"/></svg>
     Calendario
   </button>
+  <button data-tab="todo">
+    <!-- pergamena con spunta -->
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h11a2 2 0 012 2v14a2 2 0 01-2 2H6"/><path d="M6 3a2 2 0 00-2 2v1h4V5a2 2 0 00-2-2zM6 21a2 2 0 01-2-2v-1h4v1a2 2 0 01-2 2z"/><path d="M10 12l2 2 4-4"/></svg>
+    Da fare
+    <span class="badge hidden" id="badgeTodo"></span>
+  </button>
   <button data-tab="imp">
-    <!-- ancora -->
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="2"/><path d="M12 7v14M8 11h8M5 14a7 7 0 0014 0"/></svg>
-    Impostazioni
+    Stiva
   </button>
 </nav>
 
 <script>
 "use strict";
 /* =========================================================
-   DIARIO DI BORDO v5
-   - Planner: griglia Lunedì–Sabato × ore 8:30–17:30.
-     Ogni ora si colora con una di 4 voci:
-     Ragazzo 1, Ragazzo 2, Programmazione, Riunione.
-   - Calendario: note libere per qualsiasi giorno.
-   Tutti i dati restano nel telefono (localStorage).
+   DIARIO DI BORDO v6 — per insegnanti (di sostegno e non)
+   - Planner: griglia Lun–Sab × ore 8:30–17:30, una voce per ragazzo (1–4)
+   - Calendario: pagina del giorno con eventi, diario per ragazzo, cose da fare
+   - Da fare: lista di promemoria con spunte
+   Tutti i dati restano nel telefono (localStorage): ogni persona ha i suoi.
    ========================================================= */
 
-const CHIAVE = "diarioDiBordo.v3";
-const CHIAVE_V2 = "diarioDiBordo.v2";          // versione precedente (per migrare i dati)
+const CHIAVE = "diarioDiBordo.v3";            // nome storico della memoria: NON cambiarlo
+const CHIAVE_V2 = "diarioDiBordo.v2";
 const GIORNI = ["Lunedì","Martedì","Mercoledì","Giovedì","Venerdì","Sabato"];
 const GIORNI_BREVI = ["LUN","MAR","MER","GIO","VEN","SAB"];
-const INIZIO = 8*60+30, FINE = 17*60+30, PASSO = 60;  // righe di un'ora: 8:30–9:30 … 16:30–17:30 (in minuti)
-/** 510 → "8:30" */
-const hhmm = m => `${Math.floor(m/60)}:${String(m%60).padStart(2,"0")}`;
+const INIZIO = 8*60+30, FINE = 17*60+30, PASSO = 60;   // righe: 8:30–9:30 … 16:30–17:30 (minuti)
+const MAX_RAGAZZI = 4;
 const MESI = ["gennaio","febbraio","marzo","aprile","maggio","giugno","luglio","agosto","settembre","ottobre","novembre","dicembre"];
 
-// ---------- STATO ----------
+/** Tipi di evento del calendario */
+const TIPI = {
+  colloquio: { nome:"Colloquio genitori", ico:"👪" },
+  glo:       { nome:"GLO / Riunione",     ico:"📋" },
+  uscita:    { nome:"Uscita didattica",   ico:"🚌" },
+  verifica:  { nome:"Verifica",           ico:"✏️" },
+  assente:   { nome:"Assenza ragazzo",    ico:"🚫" },
+  vacanza:   { nome:"Vacanza / Festa",    ico:"🏝️" },
+  nota:      { nome:"Nota",               ico:"📌" },
+};
+/** Umori del diario */
+const UMORI = {
+  bene:      { e:"😊", nome:"Bene" },
+  cosi:      { e:"😐", nome:"Così così" },
+  difficile: { e:"😟", nome:"Difficile" },
+};
+
+// =========================================================
+// STATO E MIGRAZIONI
+// =========================================================
 /**
  * {
- *   versione: 5,
- *   ragazzi: ["Nome 1", "Nome 2"],
- *   planner: { "0-510": 0, "2-870": 3, ... }   // "giorno-minuti di inizio": categoria (0..3)
- *                                              // giorno 0 = lunedì; 510 = 8:30, 870 = 14:30
- *   note: { "2026-10-05": "testo" }
+ *   versione: 6,
+ *   profilo: { nome:"", configurato:false },
+ *   ragazzi: ["Nome", ...]                       // da 1 a 4
+ *   planner: { "0-510": 0 }                       // "giorno-minuti": indice ragazzo
+ *   giorni: { "2026-10-05": {
+ *       eventi: [ {id, tipo, testo, r} ],         // r = indice ragazzo oppure null (generale)
+ *       diario: { "0": {umore:"bene", testo:"..."} }
+ *   } },
+ *   todo: [ {id, testo, data:"2026-10-07"|null, fatto:false} ]
  * }
  */
 function statoIniziale(){
-  return { versione:5, ragazzi:["Ragazzo 1","Ragazzo 2"], planner:{}, note:{} };
+  return { versione:6, profilo:{nome:"", configurato:false}, ragazzi:["Ragazzo 1","Ragazzo 2"], planner:{}, giorni:{}, todo:[] };
 }
+const nuovoId = () => Date.now().toString(36) + Math.random().toString(36).slice(2,6);
 
-/** v4 → v5: dalle mezz'ore alle ore che iniziano alle :30.
- *  Lo slot 8:30–9:30 prende la voce della mezz'ora 8:30 (o, se vuota, di quella delle 9:00). */
-function migraMezzoreInOre(planner){
-  const nuovo = {};
-  for(let g=0; g<6; g++){
-    for(let m=INIZIO; m<FINE; m+=PASSO){
-      const k = planner[`${g}-${m}`] ?? planner[`${g}-${m+30}`];
-      if(k !== undefined) nuovo[`${g}-${m}`] = k;
-    }
-  }
-  return nuovo;
-}
-
-/** v3 → v4: ogni ora intera ("0-8") diventa due mezz'ore ("0-480" e "0-510") */
-function migraOreInMezzore(planner){
-  const nuovo = {};
-  for(const [id, k] of Object.entries(planner || {})){
-    const [g, h] = id.split("-").map(Number);
-    nuovo[`${g}-${h*60}`] = k;
-    nuovo[`${g}-${h*60+30}`] = k;
-  }
-  return nuovo;
-}
-
-/** Converte i dati della v2 (fasce orarie) nella griglia oraria della v3 */
-function migraDaV2(v2){
-  const s = statoIniziale();
-  if(Array.isArray(v2.ragazzi) && v2.ragazzi.length===2) s.ragazzi = v2.ragazzi;
-  s.note = v2.note || {};
+/* --- vecchie versioni (mai buttare i dati di chi usa già l'app) --- */
+function migraDaV2(v2){                       // v2: fasce orarie libere
+  const s = { versione:5, ragazzi: v2.ragazzi, planner:{}, note: v2.note || {} };
   const min = t => { const [h,m] = t.split(":").map(Number); return h*60+m; };
   for(const [g, fasce] of Object.entries(v2.settimana || {})){
-    if(Number(g) > 5) continue;                 // la domenica non c'è più
+    if(Number(g) > 5) continue;
     for(const f of fasce){
       if(!f.in || !f.out) continue;
       for(let m=INIZIO; m<FINE; m+=PASSO){
-        // l'ora conta se la fascia ne copre almeno metà
         const coperto = Math.min(min(f.out), m+PASSO) - Math.max(min(f.in), m);
         if(coperto >= PASSO/2) s.planner[`${g}-${m}`] = f.r;
       }
@@ -316,28 +372,63 @@ function migraDaV2(v2){
   }
   return s;
 }
-
+function migraOreInMezzore(planner){          // v3 → v4
+  const n = {};
+  for(const [id,k] of Object.entries(planner||{})){ const [g,h] = id.split("-").map(Number); n[`${g}-${h*60}`]=k; n[`${g}-${h*60+30}`]=k; }
+  return n;
+}
+function migraMezzoreInOre(planner){          // v4 → v5
+  const n = {};
+  for(let g=0; g<6; g++) for(let m=INIZIO; m<FINE; m+=PASSO){
+    const k = planner[`${g}-${m}`] ?? planner[`${g}-${m+30}`];
+    if(k !== undefined) n[`${g}-${m}`] = k;
+  }
+  return n;
+}
+/** Porta qualsiasi versione alla v6 */
+function migra(s){
+  const v = s.versione || 3;
+  if(v < 4) s.planner = migraOreInMezzore(s.planner);
+  if(v < 5) s.planner = migraMezzoreInOre(s.planner || {});
+  if(v < 6){
+    // v5 → v6: via Programmazione (2) e Riunione (3); note di testo → eventi "Nota"
+    const planner = {};
+    for(const [id,k] of Object.entries(s.planner || {})) if(k===0 || k===1) planner[id] = k;
+    const giorni = {};
+    for(const [k,testo] of Object.entries(s.note || {})){
+      if(testo) giorni[k] = { eventi:[{ id:nuovoId(), tipo:"nota", testo, r:null }], diario:{} };
+    }
+    const ragazzi = Array.isArray(s.ragazzi) && s.ragazzi.length ? s.ragazzi.slice(0,2) : ["Ragazzo 1","Ragazzo 2"];
+    const usata = Object.keys(planner).length || Object.keys(giorni).length || ragazzi.join() !== "Ragazzo 1,Ragazzo 2";
+    s = { versione:6, profilo:{ nome:"", configurato: !!usata }, ragazzi, planner, giorni, todo:[] };
+  }
+  return s;
+}
+/** Garantisce che tutti i campi esistano e siano del tipo giusto */
+function normalizza(s){
+  const b = statoIniziale();
+  const ragazzi = Array.isArray(s.ragazzi) && s.ragazzi.length ? s.ragazzi.slice(0, MAX_RAGAZZI).map(String) : b.ragazzi;
+  return {
+    versione: 6,
+    profilo: { ...b.profilo, ...(s.profilo||{}) },
+    ragazzi,
+    planner: s.planner || {},
+    giorni: s.giorni || {},
+    todo: Array.isArray(s.todo) ? s.todo : [],
+  };
+}
 function carica(){
   try{
     const raw = localStorage.getItem(CHIAVE);
     if(raw){
-      const s = JSON.parse(raw), base = statoIniziale();
-      const v = s.versione || 3;
-      if(v < 4) s.planner = migraOreInMezzore(s.planner);   // v3: ore intere → mezz'ore
-      if(v < 5){                                             // v4: mezz'ore → ore dalle :30
-        s.planner = migraMezzoreInOre(s.planner || {});
-        s.versione = 5;
-        localStorage.setItem(CHIAVE, JSON.stringify(s));
-      }
-      return {
-        ...base, ...s,
-        ragazzi: Array.isArray(s.ragazzi) && s.ragazzi.length===2 ? s.ragazzi : base.ragazzi,
-        planner: s.planner || {}, note: s.note || {}
-      };
+      const prima = JSON.parse(raw);
+      const s = normalizza(migra(prima));
+      if((prima.versione||3) < 6) localStorage.setItem(CHIAVE, JSON.stringify(s));
+      return s;
     }
     const vecchio = localStorage.getItem(CHIAVE_V2);
     if(vecchio){
-      const s = migraDaV2(JSON.parse(vecchio));
+      const s = normalizza(migra(migraDaV2(JSON.parse(vecchio))));
       localStorage.setItem(CHIAVE, JSON.stringify(s));
       return s;
     }
@@ -352,35 +443,49 @@ function salva(){
 }
 if(navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{});
 
-// ---------- CATEGORIE ----------
-/** Le 4 voci del planner: nome visibile e versione corta per le celle */
-function categorie(){
-  return [
-    { nome: stato.ragazzi[0], corto: stato.ragazzi[0] },
-    { nome: stato.ragazzi[1], corto: stato.ragazzi[1] },
-    { nome: "Programmazione", corto: "Progr." },
-    { nome: "Riunione", corto: "Riun." },
-  ];
-}
-
-// ---------- UTILITÀ ----------
+// =========================================================
+// UTILITÀ
+// =========================================================
 const pad = n => String(n).padStart(2,"0");
-const chiave = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const chiave = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;   // Date → "YYYY-MM-DD"
 const daChiave = k => { const [y,m,d] = k.split("-").map(Number); return new Date(y,m-1,d); };
 const oggi = () => { const d = new Date(); d.setHours(0,0,0,0); return d; };
-const giornoSett = d => (d.getDay()+6)%7;      // lunedì = 0 … domenica = 6
+const addGiorni = (d,n) => { const x = new Date(d); x.setDate(x.getDate()+n); return x; };
+const giornoSett = d => (d.getDay()+6)%7;                   // lunedì = 0 … domenica = 6
+const hhmm = m => `${Math.floor(m/60)}:${pad(m%60)}`;       // 510 → "8:30"
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-/** Numero di caselle (1 casella = 1 ora) → testo */
 const ore = n => n === 1 ? "1 ora" : `${n} ore`;
-function dataLunga(d){
-  const s = d.toLocaleDateString("it-IT",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+const nomeR = r => esc(stato.ragazzi[r] ?? "");
+function dataLunga(d, anno=true){
+  const s = d.toLocaleDateString("it-IT",{weekday:"long",day:"numeric",month:"long",...(anno?{year:"numeric"}:{})});
   return s.charAt(0).toUpperCase()+s.slice(1);
 }
+/** "Oggi", "Domani", "Ieri" oppure "ven 10 ott" */
+function quando(k){
+  const diff = Math.round((daChiave(k) - oggi()) / 86400000);
+  if(diff === 0) return "Oggi";
+  if(diff === 1) return "Domani";
+  if(diff === -1) return "Ieri";
+  return daChiave(k).toLocaleDateString("it-IT",{weekday:"short",day:"numeric",month:"short"});
+}
+function scaricaFile(nome, contenuto, tipo){
+  const blob = new Blob([contenuto], {type:tipo});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = nome;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 2000);
+}
+const todoAperti = () => stato.todo.filter(t => !t.fatto);
+/** quante cose da fare sono per oggi o in ritardo (per il badge) */
+const todoUrgenti = () => todoAperti().filter(t => t.data && t.data <= chiave(oggi())).length;
 
-// ---------- NAVIGAZIONE ----------
+// =========================================================
+// NAVIGAZIONE
+// =========================================================
 let scheda = "sett";
 let meseCal = new Date(oggi().getFullYear(), oggi().getMonth(), 1);
-let pennello = 0;          // categoria selezionata (0..3) oppure -1 = gomma
+let pennello = 0;          // ragazzo selezionato nella tavolozza, -1 = gomma
 
 document.querySelectorAll("#nav button").forEach(b => b.addEventListener("click", ()=>{
   scheda = b.dataset.tab; render(); window.scrollTo(0,0);
@@ -388,89 +493,121 @@ document.querySelectorAll("#nav button").forEach(b => b.addEventListener("click"
 
 function render(){
   document.querySelectorAll("#nav button").forEach(b => b.classList.toggle("on", b.dataset.tab===scheda));
+  const nome = stato.profilo.nome ? `Capitana ${esc(stato.profilo.nome)}` : "";
   const info = {
-    sett:["Planner Settimanale","La rotta della settimana"],
-    cal: ["Il Calendario","Note di bordo per ogni giorno"],
-    imp: ["La Stiva","Nomi e backup"]
+    sett:["Planner Settimanale", nome || "La rotta della settimana"],
+    cal: ["Il Calendario","Eventi e diario di bordo"],
+    todo:["Da Fare","Le missioni della ciurma"],
+    imp: ["La Stiva","Ciurma, backup ed esportazioni"]
   }[scheda];
   document.getElementById("titolo").textContent = info[0];
-  document.getElementById("sottotitolo").textContent = info[1];
-  document.getElementById("app").innerHTML = ({sett:viewSett, cal:viewCal, imp:viewImp})[scheda]();
-  ({sett:bindSett, cal:bindCal, imp:bindImp})[scheda]();
+  document.getElementById("sottotitolo").innerHTML = info[1];
+  if(pennello >= stato.ragazzi.length) pennello = 0;
+  document.getElementById("app").innerHTML = ({sett:viewSett, cal:viewCal, todo:viewTodo, imp:viewImp})[scheda]();
+  ({sett:bindSett, cal:bindCal, todo:bindTodo, imp:bindImp})[scheda]();
+  // badge sulle cose da fare urgenti
+  const n = todoUrgenti(), badge = document.getElementById("badgeTodo");
+  badge.textContent = n; badge.classList.toggle("hidden", n === 0);
 }
 
 // =========================================================
 // SEZIONE 1 — PLANNER SETTIMANALE
 // =========================================================
-function viewSett(){
-  const cat = categorie();
-  const gOggi = giornoSett(oggi());       // 6 = domenica: nessuna colonna evidenziata
+/** Prossimi eventi da oggi in poi (max n) */
+function prossimiEventi(n){
+  const kOggi = chiave(oggi());
+  const out = [];
+  for(const k of Object.keys(stato.giorni).filter(k => k >= kOggi).sort()){
+    for(const ev of stato.giorni[k].eventi || []){ out.push({k, ev}); if(out.length >= n) return out; }
+  }
+  return out;
+}
 
-  // 1) tavolozza
-  const tavolozza = cat.map((c,i)=>`
+function viewSett(){
+  const R = stato.ragazzi, gOggi = giornoSett(oggi());
+
+  // 0) prossimi impegni
+  const prossimi = prossimiEventi(3);
+  const urgenti = todoUrgenti();
+  const impegni = (prossimi.length
+      ? prossimi.map(({k,ev})=>`
+        <button class="impegno" data-giorno="${k}">
+          <span class="ico">${TIPI[ev.tipo]?.ico || "📌"}</span>
+          <span class="txt"><span class="quando">${quando(k)}</span>
+            <div class="cosa">${esc(TIPI[ev.tipo]?.nome || "Nota")}${ev.r!=null && R[ev.r]!=null ? " · "+nomeR(ev.r) : ""}${ev.testo ? " — "+esc(ev.testo) : ""}</div></span>
+        </button>`).join("")
+      : `<div class="muted small">Nessun impegno in vista. Mare calmo! 🌊</div>`)
+    + (urgenti ? `<button class="impegno" data-vai="todo"><span class="ico">⚓</span><span class="txt"><span class="quando">Da fare</span><div class="cosa">${urgenti===1?"1 missione":urgenti+" missioni"} per oggi</div></span></button>` : "");
+
+  // 1) tavolozza: un bottone per ragazzo + gomma
+  const tavolozza = R.map((n,i)=>`
       <button class="tav k${i} ${pennello===i?"on":""}" data-p="${i}">
-        <span class="pallino" style="background:var(--c${i})"></span><span class="t">${esc(c.nome)}</span>
+        <span class="pallino" style="background:var(--c${i})"></span><span class="t">${esc(n)}</span>
       </button>`).join("")
     + `<button class="tav gomma ${pennello===-1?"on":""}" data-p="-1">🧽 Gomma (cancella)</button>`;
 
   // 2) griglia
   let griglia = `<div></div>` + GIORNI_BREVI.map((g,i)=>`<div class="gh ${i===gOggi?"oggi":""}">${g}</div>`).join("");
   for(let m=INIZIO; m<FINE; m+=PASSO){
-    // etichetta riga: inizio in grassetto, fine sotto in piccolo (es. 8:30 / 9:30)
     griglia += `<div class="ora">${hhmm(m)}<small>${hhmm(m+PASSO)}</small></div>`;
     for(let g=0; g<6; g++){
       const k = stato.planner[`${g}-${m}`];
-      const piena = k !== undefined;
+      const piena = k !== undefined && R[k] !== undefined;
       griglia += `<button class="cella ${piena?"k"+k:""} ${g===gOggi?"oggi":""}" data-c="${g}-${m}"
-        aria-label="${GIORNI[g]} ${hhmm(m)}–${hhmm(m+PASSO)}">${piena ? esc(cat[k].corto) : ""}</button>`;
+        aria-label="${GIORNI[g]} ${hhmm(m)}–${hhmm(m+PASSO)}">${piena ? esc(R[k]) : ""}</button>`;
     }
   }
 
-  // 3) totali
-  const tot = [0,0,0,0];
-  for(const k of Object.values(stato.planner)) tot[k]++;
-  const casse = cat.map((c,i)=>`<div class="cassa k${i} k${i}-bg" style="background:var(--c${i}-soft)"><b>${ore(tot[i])}</b><span>${esc(c.nome)}</span></div>`).join("");
+  // 3) totali per ragazzo
+  const tot = R.map(()=>0);
+  for(const k of Object.values(stato.planner)) if(tot[k] !== undefined) tot[k]++;
+  const casse = R.map((n,i)=>`<div class="cassa k${i}"><b>${ore(tot[i])}</b><span>${esc(n)}</span></div>`).join("");
 
   return `
     <div class="card">
-      <p class="passo">① Scegli cosa segnare</p>
+      <h2 class="pirata">Prossimi impegni</h2>
+      ${impegni}
+    </div>
+    <div class="card">
+      <p class="passo">① Scegli il ragazzo</p>
       <div class="tavolozza">${tavolozza}</div>
     </div>
     <div class="card" style="padding:12px 8px">
       <p class="passo" style="padding-left:6px">② Tocca le ore</p>
-      <div class="planner" id="planner">${griglia}</div>
+      <div class="planner">${griglia}</div>
     </div>
     <div class="card">
       <h2 class="pirata">Bottino della settimana</h2>
-      <div class="bottino">${casse}</div>
-      <div class="totale">Totale: ${ore(tot.reduce((a,b)=>a+b,0))}</div>
+      <div class="bottino ${R.length===1?"uno":""}">${casse}</div>
+      ${R.length > 1 ? `<div class="totale">Totale: ${ore(tot.reduce((a,b)=>a+b,0))}</div>` : ""}
     </div>`;
 }
-
 function bindSett(){
   document.querySelectorAll(".tav").forEach(b => b.onclick = ()=>{
     pennello = Number(b.dataset.p);
     document.querySelectorAll(".tav").forEach(x => x.classList.toggle("on", x===b));
   });
-  document.querySelectorAll(".cella").forEach(c => c.onclick = ()=>coloraCella(c.dataset.c));
+  document.querySelectorAll(".cella").forEach(c => c.onclick = ()=>coloraCella(c));
+  document.querySelectorAll("[data-giorno]").forEach(b => b.onclick = ()=>apriGiorno(b.dataset.giorno));
+  document.querySelectorAll("[data-vai]").forEach(b => b.onclick = ()=>{ scheda = b.dataset.vai; render(); window.scrollTo(0,0); });
 }
 
-/** Tocco su una cella: la colora con la voce scelta.
- *  Se ha già quella voce (o è attiva la gomma) la svuota. */
-function coloraCella(id){
-  const attuale = stato.planner[id];
+/** Tocco su una cella: la colora col ragazzo scelto; se è già sua (o c'è la gomma) la svuota.
+ *  Aggiorno solo quella cella e i totali, senza ridisegnare tutta la pagina. */
+function coloraCella(el){
+  const id = el.dataset.c, attuale = stato.planner[id];
   if(pennello === -1 || attuale === pennello) delete stato.planner[id];
   else stato.planner[id] = pennello;
   salva();
   if(navigator.vibrate) navigator.vibrate(15);
-  const y = window.scrollY;           // ridisegna senza far saltare la pagina
-  render(); window.scrollTo(0, y);
+  const y = window.scrollY; render(); window.scrollTo(0, y);
 }
 
 // =========================================================
-// SEZIONE 2 — CALENDARIO CON NOTE
+// SEZIONE 2 — CALENDARIO
 // =========================================================
 function viewCal(){
+  const R = stato.ragazzi;
   const y = meseCal.getFullYear(), m = meseCal.getMonth();
   const giorniMese = new Date(y, m+1, 0).getDate();
   const offset = giornoSett(new Date(y, m, 1));
@@ -479,19 +616,54 @@ function viewCal(){
   let celle = ["L","M","M","G","V","S","D"].map(g=>`<div class="dow">${g}</div>`).join("");
   for(let i=0;i<offset;i++) celle += `<div class="d vuoto"></div>`;
   for(let g=1; g<=giorniMese; g++){
-    const d = new Date(y,m,g), k = chiave(d);
+    const d = new Date(y,m,g), k = chiave(d), gi = stato.giorni[k];
+    const eventi = gi?.eventi || [];
+    const diario = gi?.diario || {};
     const cls = ["d"];
     if(k===kOggi) cls.push("oggi");
     if(giornoSett(d)===6) cls.push("dom");
-    if(stato.note[k]) cls.push("nota");
-    celle += `<button class="${cls.join(" ")}" data-k="${k}">${g}</button>`;
+    if(eventi.length) cls.push("pieno");
+    const icone = eventi.slice(0,2).map(e=>TIPI[e.tipo]?.ico || "📌").join("") + (eventi.length>2 ? "+" : "");
+    const pallini = Object.keys(diario).filter(r => R[r] !== undefined).map(r=>`<i style="background:var(--c${r})"></i>`).join("");
+    celle += `<button class="${cls.join(" ")}" data-k="${k}">
+      <span class="n">${g}</span>
+      ${icone ? `<span class="ev">${icone}</span>` : ""}
+      ${pallini ? `<span class="dots">${pallini}</span>` : ""}
+    </button>`;
   }
 
+  // ---- riepilogo del mese ----
   const prefisso = `${y}-${pad(m+1)}-`;
-  const noteMese = Object.keys(stato.note).filter(k=>k.startsWith(prefisso)).sort();
-  const lista = noteMese.length
-    ? noteMese.map(k=>`<button class="nota-riga" data-k="${k}"><b>${dataLunga(daChiave(k))}</b><span>${esc(stato.note[k])}</span></button>`).join("")
-    : `<div class="muted small">Nessuna nota questo mese. Tocca un giorno per scriverne una.</div>`;
+  const chiaviMese = Object.keys(stato.giorni).filter(k=>k.startsWith(prefisso)).sort();
+  const conta = {};                         // tipo → numero
+  const perR = R.map(()=>({ assenze:0, bene:0, cosi:0, difficile:0 }));
+  const listaEventi = [];
+  for(const k of chiaviMese){
+    const gi = stato.giorni[k];
+    for(const ev of gi.eventi || []){
+      conta[ev.tipo] = (conta[ev.tipo]||0) + 1;
+      if(ev.tipo==="assente" && ev.r!=null && perR[ev.r]) perR[ev.r].assenze++;
+      listaEventi.push({k, ev});
+    }
+    for(const [r, d] of Object.entries(gi.diario || {})) if(perR[r] && d.umore) perR[r][d.umore]++;
+  }
+  const boxTipi = Object.entries(TIPI).filter(([t])=>conta[t] && t!=="assente")
+    .map(([t,info])=>`<div class="box"><b>${info.ico} ${conta[t]}</b><span>${info.nome}</span></div>`).join("");
+  const righeR = R.map((n,i)=>`
+    <div class="riga-ragazzo">
+      <span class="pallino" style="background:var(--c${i})"></span>
+      <span class="nome">${esc(n)}</span>
+      <span title="Assenze">🚫 ${perR[i].assenze}</span>
+      <span>😊 ${perR[i].bene}</span><span>😐 ${perR[i].cosi}</span><span>😟 ${perR[i].difficile}</span>
+    </div>`).join("");
+  const elenco = listaEventi.length
+    ? listaEventi.map(({k,ev})=>`
+      <button class="impegno" data-k="${k}">
+        <span class="ico">${TIPI[ev.tipo]?.ico || "📌"}</span>
+        <span class="txt"><span class="quando">${dataLunga(daChiave(k), false)}</span>
+          <div class="cosa">${esc(TIPI[ev.tipo]?.nome || "Nota")}${ev.r!=null && R[ev.r]!=null ? " · "+nomeR(ev.r) : ""}${ev.testo ? " — "+esc(ev.testo) : ""}</div></span>
+      </button>`).join("")
+    : `<div class="vuoto-msg"><span class="pirata">Pagine bianche…</span>Tocca un giorno per scrivere un evento o il diario.</div>`;
 
   return `
     <div class="card">
@@ -501,11 +673,18 @@ function viewCal(){
         <button class="icon-btn" id="succ" aria-label="Mese successivo">›</button>
       </div>
       <div class="cal">${celle}</div>
-      <button class="btn btn-ghost btn-wide" id="vaiOggi" style="margin-top:12px;min-height:40px">Torna a oggi</button>
+      <div class="legenda"><span>Icone = eventi</span><span>Pallini = diario scritto</span></div>
+      <button class="btn btn-ghost btn-wide btn-sm" id="vaiOggi" style="margin-top:10px">Torna a oggi</button>
     </div>
     <div class="card">
-      <h2 class="pirata">Note del mese</h2>
-      ${lista}
+      <h2 class="pirata">Il mese in breve</h2>
+      ${boxTipi ? `<div class="riep" style="margin-bottom:10px">${boxTipi}</div>` : ""}
+      ${righeR}
+      <p class="small muted" style="margin:8px 0 0">🚫 assenze · 😊 😐 😟 giornate segnate nel diario</p>
+    </div>
+    <div class="card">
+      <h2 class="pirata">Eventi del mese</h2>
+      ${elenco}
     </div>`;
 }
 function bindCal(){
@@ -513,47 +692,309 @@ function bindCal(){
   document.getElementById("prec").onclick = ()=>sposta(-1);
   document.getElementById("succ").onclick = ()=>sposta(1);
   document.getElementById("vaiOggi").onclick = ()=>{ meseCal = new Date(oggi().getFullYear(), oggi().getMonth(), 1); render(); };
-  document.querySelectorAll("[data-k]").forEach(b => b.onclick = ()=>apriNota(b.dataset.k));
+  document.querySelectorAll("[data-k]").forEach(b => b.onclick = ()=>apriGiorno(b.dataset.k));
 }
 
-function apriNota(k){
-  const testo = stato.note[k] || "";
+// ---------------------------------------------------------
+// PAGINA DEL GIORNO (foglio dal basso)
+// Si lavora su una "bozza": si salva quando si chiude.
+// ---------------------------------------------------------
+let bozza = null;     // { k, eventi:[], diario:{} }
+let evForm = null;    // evento in scrittura: { id|null, tipo, r, testo } oppure null se il modulo è chiuso
+
+function apriGiorno(k){
+  const gi = stato.giorni[k] || { eventi:[], diario:{} };
+  bozza = { k, eventi: JSON.parse(JSON.stringify(gi.eventi||[])), diario: JSON.parse(JSON.stringify(gi.diario||{})) };
+  evForm = null;
+  disegnaGiorno();
+  apriFoglio(salvaGiorno);
+}
+
+function disegnaGiorno(){
+  const R = stato.ragazzi, d = daChiave(bozza.k);
+
+  // --- eventi ---
+  const eventi = bozza.eventi.map((ev,i)=>`
+    <div class="evento">
+      <span class="ico">${TIPI[ev.tipo]?.ico || "📌"}</span>
+      <button class="corpo" data-modifica="${i}">
+        <b>${esc(TIPI[ev.tipo]?.nome || "Nota")}</b>
+        ${ev.r!=null && R[ev.r]!=null ? `<span class="tag k${ev.r}" style="color:var(--c${ev.r});margin-left:4px">${nomeR(ev.r)}</span>` : ""}
+        ${ev.testo ? `<div>${esc(ev.testo)}</div>` : ""}
+      </button>
+      <button class="x-btn" data-elimina="${i}" aria-label="Elimina evento">✕</button>
+    </div>`).join("");
+
+  let modulo = "";
+  if(evForm){
+    const tipi = Object.entries(TIPI).map(([t,info])=>`<button class="tipo ${evForm.tipo===t?"on":""}" data-tipo="${t}"><span>${info.ico}</span>${info.nome}</button>`).join("");
+    const chi = [`<button class="chip ${evForm.r==null?"on":""}" data-chi="">Tutti</button>`]
+      .concat(R.map((n,i)=>`<button class="chip ${evForm.r===i?"on":""}" data-chi="${i}"><span class="pallino" style="background:var(--c${i});margin-right:6px;vertical-align:-1px"></span>${esc(n)}</button>`)).join("");
+    modulo = `
+      <div class="form-evento">
+        <div class="tipi">${tipi}</div>
+        <label class="f">Riguarda</label>
+        <div class="chips">${chi}</div>
+        <label class="f" for="evTesto">Dettagli (facoltativo)</label>
+        <textarea id="evTesto" placeholder="Es. ore 15:00, aula 2B, portare le schede…">${esc(evForm.testo)}</textarea>
+        <div style="display:grid;grid-template-columns:1fr 2fr;gap:8px;margin-top:10px">
+          <button class="btn btn-ghost btn-sm" id="evAnnulla">Annulla</button>
+          <button class="btn btn-oro btn-sm" id="evOk">${evForm.id ? "Aggiorna evento" : "Aggiungi evento"}</button>
+        </div>
+      </div>`;
+  }
+
+  // --- diario per ragazzo ---
+  const diario = R.map((n,i)=>{
+    const dd = bozza.diario[i] || {};
+    const umori = Object.entries(UMORI).map(([u,info])=>`<button class="umore ${dd.umore===u?"on":""}" data-r="${i}" data-umore="${u}"><span class="e">${info.e}</span>${info.nome}</button>`).join("");
+    return `
+      <div class="diario k${i}" style="border-color:var(--c${i})">
+        <div class="nome">${esc(n)}</div>
+        <div class="umori">${umori}</div>
+        <textarea data-diario="${i}" placeholder="Cosa ha fatto oggi? Progressi, difficoltà, attività…">${esc(dd.testo||"")}</textarea>
+      </div>`;
+  }).join("");
+
+  // --- cose da fare del giorno ---
+  const todoGiorno = stato.todo.filter(t => t.data === bozza.k);
+  const todoHtml = todoGiorno.map(t=>`
+    <div class="todo ${t.fatto?"fatto":""}">
+      <button class="spunta" data-spunta="${t.id}" aria-label="Segna come fatto">${t.fatto?"✓":""}</button>
+      <span class="testo">${esc(t.testo)}</span>
+    </div>`).join("");
+
   document.getElementById("sheet").innerHTML = `
     <div class="maniglia"></div>
-    <h3 class="pirata">${dataLunga(daChiave(k))}</h3>
-    <label class="f" for="testoNota">Nota di bordo</label>
-    <textarea id="testoNota" placeholder="Es. uscita didattica, colloquio con i genitori, riunione…">${esc(testo)}</textarea>
-    <div class="azioni ${testo?"":"solo"}">
-      ${testo ? `<button class="btn btn-ghost btn-danger" id="elimina">Elimina</button>` : ""}
-      <button class="btn btn-prim pirata" id="salva" style="font-size:20px">Salva nota</button>
+    <h3 class="pirata">${dataLunga(d)}</h3>
+
+    <div class="sezione">
+      <div class="titolo"><h4 class="pirata">📜 Eventi</h4>
+        ${evForm ? "" : `<button class="btn btn-sm" id="evNuovo">+ Evento</button>`}</div>
+      ${eventi || (evForm ? "" : `<div class="muted small">Nessun evento.</div>`)}
+      ${modulo}
+    </div>
+
+    <div class="sezione">
+      <div class="titolo"><h4 class="pirata">🧭 Diario della giornata</h4></div>
+      ${diario}
+    </div>
+
+    <div class="sezione">
+      <div class="titolo"><h4 class="pirata">⚓ Da fare</h4></div>
+      ${todoHtml}
+      <div class="nuovo-todo" style="margin-top:6px">
+        <input type="text" id="todoGiorno" placeholder="Aggiungi una cosa da fare…" maxlength="120">
+        <button class="btn btn-sm" id="todoGiornoOk">+</button>
+      </div>
+    </div>
+
+    <div class="fondo">
+      <button class="btn btn-prim btn-wide pirata" id="giornoOk" style="font-size:22px">Salva nel diario ✓</button>
     </div>`;
-  document.getElementById("salva").onclick = ()=>{
-    const t = document.getElementById("testoNota").value.trim();
-    if(t) stato.note[k] = t; else delete stato.note[k];
-    salva(); chiudiFoglio(); toast(t ? "Nota salvata ✓" : "Nota eliminata"); render();
+
+  // ---- eventi DOM ----
+  const $ = id => document.getElementById(id);
+  if($("evNuovo")) $("evNuovo").onclick = ()=>{ evForm = { id:null, tipo:"nota", r:null, testo:"" }; disegnaGiorno(); };
+  document.querySelectorAll("[data-modifica]").forEach(b => b.onclick = ()=>{
+    const ev = bozza.eventi[Number(b.dataset.modifica)];
+    evForm = { ...ev }; disegnaGiorno();
+  });
+  document.querySelectorAll("[data-elimina]").forEach(b => b.onclick = ()=>{
+    bozza.eventi.splice(Number(b.dataset.elimina),1);
+    if(evForm && !bozza.eventi.find(e=>e.id===evForm.id)) evForm = evForm.id ? null : evForm;
+    disegnaGiorno();
+  });
+  if(evForm){
+    $("evTesto").oninput = e => evForm.testo = e.target.value;
+    document.querySelectorAll("[data-tipo]").forEach(b => b.onclick = ()=>{
+      evForm.tipo = b.dataset.tipo;
+      // per "Assenza ragazzo" propongo subito il primo ragazzo
+      if(evForm.tipo==="assente" && evForm.r==null) evForm.r = 0;
+      disegnaGiorno();
+    });
+    document.querySelectorAll("[data-chi]").forEach(b => b.onclick = ()=>{
+      evForm.r = b.dataset.chi === "" ? null : Number(b.dataset.chi); disegnaGiorno();
+    });
+    $("evAnnulla").onclick = ()=>{ evForm = null; disegnaGiorno(); };
+    $("evOk").onclick = ()=>{ confermaEvento(); disegnaGiorno(); };
+  }
+  document.querySelectorAll("[data-umore]").forEach(b => b.onclick = ()=>{
+    const r = b.dataset.r, u = b.dataset.umore;
+    bozza.diario[r] = bozza.diario[r] || {};
+    bozza.diario[r].umore = bozza.diario[r].umore === u ? null : u;      // tocco di nuovo = togli
+    document.querySelectorAll(`[data-umore][data-r="${r}"]`).forEach(x => x.classList.toggle("on", x.dataset.umore===bozza.diario[r].umore));
+  });
+  document.querySelectorAll("[data-diario]").forEach(t => t.oninput = ()=>{
+    const r = t.dataset.diario;
+    bozza.diario[r] = bozza.diario[r] || {};
+    bozza.diario[r].testo = t.value;
+  });
+  document.querySelectorAll("[data-spunta]").forEach(b => b.onclick = ()=>{ spuntaTodo(b.dataset.spunta); disegnaGiorno(); });
+  const aggiungiTodoGiorno = ()=>{
+    const t = $("todoGiorno").value.trim(); if(!t) return;
+    stato.todo.push({ id:nuovoId(), testo:t, data:bozza.k, fatto:false }); salva(); disegnaGiorno();
   };
-  const el = document.getElementById("elimina");
-  if(el) el.onclick = ()=>{ delete stato.note[k]; salva(); chiudiFoglio(); toast("Nota eliminata"); render(); };
-  apriFoglio();
+  $("todoGiornoOk").onclick = aggiungiTodoGiorno;
+  $("todoGiorno").onkeydown = e => { if(e.key==="Enter") aggiungiTodoGiorno(); };
+  $("giornoOk").onclick = ()=>chiudiFoglio();
+}
+
+/** Inserisce o aggiorna l'evento del modulo nella bozza */
+function confermaEvento(){
+  if(!evForm) return;
+  const ev = { id: evForm.id || nuovoId(), tipo: evForm.tipo, r: evForm.r ?? null, testo: (evForm.testo||"").trim() };
+  const i = bozza.eventi.findIndex(e => e.id === ev.id);
+  if(i >= 0) bozza.eventi[i] = ev; else bozza.eventi.push(ev);
+  evForm = null;
+}
+
+/** Salva la bozza del giorno (chiamata alla chiusura del foglio) */
+function salvaGiorno(){
+  if(!bozza) return;
+  // un evento lasciato a metà con del testo non va perso
+  if(evForm && (evForm.testo||"").trim()) confermaEvento();
+  const diario = {};
+  for(const [r,d] of Object.entries(bozza.diario)){
+    const testo = (d.testo||"").trim();
+    if(d.umore || testo) diario[r] = { umore: d.umore || null, testo };
+  }
+  const k = bozza.k;
+  if(!bozza.eventi.length && !Object.keys(diario).length) delete stato.giorni[k];
+  else stato.giorni[k] = { eventi: bozza.eventi, diario };
+  salva();
+  bozza = null; evForm = null;
+  toast("Salvato nel diario ✓");
+  render();
 }
 
 // =========================================================
-// SEZIONE 3 — IMPOSTAZIONI
+// SEZIONE 3 — DA FARE
 // =========================================================
+let mostraFatte = false;
+
+function rigaTodo(t){
+  const kOggi = chiave(oggi());
+  const cls = !t.data ? "" : (t.data < kOggi ? "tardi" : (t.data === kOggi ? "oggi" : ""));
+  return `
+    <div class="todo ${t.fatto?"fatto":""}">
+      <button class="spunta" data-spunta="${t.id}" aria-label="Segna come fatto">${t.fatto?"✓":""}</button>
+      <span class="testo">${esc(t.testo)}</span>
+      ${t.data ? `<button class="scad ${t.fatto?"":cls}" data-giorno="${t.data}">${quando(t.data)}</button>` : ""}
+      <button class="x-btn" data-cancella="${t.id}" aria-label="Elimina">✕</button>
+    </div>`;
+}
+function viewTodo(){
+  // prima quelle con data (in ordine), poi quelle senza data
+  const aperte = todoAperti().sort((a,b)=>(a.data||"9999").localeCompare(b.data||"9999"));
+  const fatte = stato.todo.filter(t=>t.fatto);
+  return `
+    <div class="card">
+      <h2 class="pirata">Nuova missione</h2>
+      <div class="nuovo-todo">
+        <input type="text" id="todoTesto" placeholder="Es. portare le schede di matematica" maxlength="120">
+        <button class="btn btn-oro" id="todoAdd">Aggiungi</button>
+        <label class="data small muted"><span style="white-space:nowrap">Per quando?</span>
+          <input type="date" id="todoData" style="padding:8px 10px"></label>
+      </div>
+    </div>
+    <div class="card">
+      <h2 class="pirata">Da fare ${aperte.length ? `<span class="muted small" style="font-family:Nunito">(${aperte.length})</span>` : ""}</h2>
+      ${aperte.length ? aperte.map(rigaTodo).join("") : `<div class="vuoto-msg"><span class="pirata">Tutto fatto, capitana!</span>Nessuna missione in sospeso.</div>`}
+    </div>
+    ${fatte.length ? `
+    <div class="card">
+      <button class="btn btn-ghost btn-wide btn-sm" id="toggleFatte">${mostraFatte ? "Nascondi" : "Mostra"} completate (${fatte.length})</button>
+      ${mostraFatte ? fatte.slice().reverse().map(rigaTodo).join("") + `<button class="btn btn-ghost btn-wide btn-sm btn-danger" id="svuotaFatte" style="margin-top:8px">Elimina le completate</button>` : ""}
+    </div>` : ""}`;
+}
+function bindTodo(){
+  const add = ()=>{
+    const testo = document.getElementById("todoTesto").value.trim();
+    if(!testo){ toast("Scrivi cosa c'è da fare"); return; }
+    const data = document.getElementById("todoData").value || null;
+    stato.todo.push({ id:nuovoId(), testo, data, fatto:false });
+    salva(); toast("Missione aggiunta ⚓"); render();
+    document.getElementById("todoTesto").focus();
+  };
+  document.getElementById("todoAdd").onclick = add;
+  document.getElementById("todoTesto").onkeydown = e => { if(e.key==="Enter") add(); };
+  document.querySelectorAll("[data-spunta]").forEach(b => b.onclick = ()=>{ spuntaTodo(b.dataset.spunta); render(); });
+  document.querySelectorAll("[data-cancella]").forEach(b => b.onclick = ()=>{
+    stato.todo = stato.todo.filter(t => t.id !== b.dataset.cancella); salva(); render();
+  });
+  document.querySelectorAll("[data-giorno]").forEach(b => b.onclick = ()=>apriGiorno(b.dataset.giorno));
+  const tf = document.getElementById("toggleFatte");
+  if(tf) tf.onclick = ()=>{ mostraFatte = !mostraFatte; render(); };
+  const sf = document.getElementById("svuotaFatte");
+  if(sf) sf.onclick = ()=>{ stato.todo = todoAperti(); salva(); toast("Completate eliminate"); render(); };
+}
+function spuntaTodo(id){
+  const t = stato.todo.find(x => x.id === id); if(!t) return;
+  t.fatto = !t.fatto; salva();
+  if(t.fatto){ toast("Missione compiuta! 🏴"); if(navigator.vibrate) navigator.vibrate(25); }
+}
+
+// =========================================================
+// SEZIONE 4 — STIVA (impostazioni)
+// =========================================================
+/** Modulo "ciurma": nome + numero ragazzi + nomi. Usato nel benvenuto e nelle impostazioni. */
+let bozzaCiurma = null;     // { nome, ragazzi:[...] }
+function htmlCiurma(){
+  const b = bozzaCiurma;
+  return `
+    <label class="f" for="cNome">Il tuo nome <span class="muted small">(facoltativo)</span></label>
+    <input type="text" id="cNome" value="${esc(b.nome)}" maxlength="25" placeholder="Es. Maria">
+    <label class="f">Quanti ragazzi segui?</label>
+    <div class="numeri">${[1,2,3,4].map(n=>`<button data-num="${n}" class="${b.ragazzi.length===n?"on":""}">${n}</button>`).join("")}</div>
+    ${b.ragazzi.map((n,i)=>`
+      <label class="f" for="cR${i}"><span class="pallino" style="background:var(--c${i});margin-right:6px;vertical-align:-1px"></span>Ragazzo ${i+1}</label>
+      <input type="text" id="cR${i}" data-rnome="${i}" value="${esc(n)}" maxlength="20" placeholder="Nome o iniziali">`).join("")}
+    <p class="small muted" style="margin:8px 0 0">Puoi usare anche solo le iniziali: i nomi restano solo su questo telefono.</p>`;
+}
+function bindCiurma(ridisegna){
+  document.getElementById("cNome").oninput = e => bozzaCiurma.nome = e.target.value;
+  document.querySelectorAll("[data-rnome]").forEach(inp => inp.oninput = ()=>{ bozzaCiurma.ragazzi[inp.dataset.rnome] = inp.value; });
+  document.querySelectorAll("[data-num]").forEach(b => b.onclick = ()=>{
+    const n = Number(b.dataset.num), r = bozzaCiurma.ragazzi;
+    while(r.length < n) r.push("");
+    r.length = n;
+    ridisegna();
+  });
+}
+/** Applica la ciurma allo stato (ritorna false se l'utente annulla) */
+function applicaCiurma(){
+  const r = bozzaCiurma.ragazzi.map((n,i)=>n.trim() || `Ragazzo ${i+1}`);
+  // se tolgo ragazzi, le loro ore nel planner vanno cancellate
+  const daTogliere = Object.entries(stato.planner).filter(([,k])=>k >= r.length);
+  if(daTogliere.length && !confirm(`Le ore segnate per i ragazzi tolti (${daTogliere.length}) verranno cancellate dal planner. Continuare?`)) return false;
+  for(const [id] of daTogliere) delete stato.planner[id];
+  stato.ragazzi = r;
+  stato.profilo.nome = bozzaCiurma.nome.trim();
+  stato.profilo.configurato = true;
+  salva();
+  return true;
+}
+
 function viewImp(){
+  bozzaCiurma = { nome: stato.profilo.nome, ragazzi: [...stato.ragazzi] };
   return `
     <div class="card">
       <h2 class="pirata">La ciurma</h2>
-      <label class="f" for="n0"><span class="pallino" style="background:var(--c0);margin-right:6px;vertical-align:-1px"></span>Primo ragazzo</label>
-      <input type="text" id="n0" value="${esc(stato.ragazzi[0])}" maxlength="20">
-      <label class="f" for="n1"><span class="pallino" style="background:var(--c1);margin-right:6px;vertical-align:-1px"></span>Secondo ragazzo</label>
-      <input type="text" id="n1" value="${esc(stato.ragazzi[1])}" maxlength="20">
-      <button class="btn btn-oro btn-wide" id="salvaNomi" style="margin-top:16px">Salva nomi</button>
+      <div id="ciurmaBox">${htmlCiurma()}</div>
+      <button class="btn btn-oro btn-wide" id="salvaCiurma" style="margin-top:16px">Salva ciurma</button>
+    </div>
+
+    <div class="card">
+      <h2 class="pirata">Esporta il diario</h2>
+      <p class="small muted" style="margin-top:0">Scarica in un file di testo tutti gli eventi e il diario di un ragazzo, in ordine di data. Utile per relazioni e PEI.</p>
+      ${stato.ragazzi.map((n,i)=>`<button class="btn btn-ghost btn-wide" data-esporta="${i}" style="margin-top:8px;justify-content:flex-start">
+        <span class="pallino" style="background:var(--c${i})"></span> 📜 Diario di ${esc(n)}</button>`).join("")}
     </div>
 
     <div class="card">
       <h2 class="pirata">Forziere di backup</h2>
-      <p class="small muted" style="margin-top:0">I dati restano solo su questo telefono. Ogni tanto scarica un backup e salvalo su Drive o mandalo su WhatsApp.</p>
+      <p class="small muted" style="margin-top:0">I dati restano solo su questo telefono. Ogni tanto scarica un backup e salvalo su Drive. <b>Non mandarlo alle colleghe</b>: contiene i tuoi dati. Alle colleghe manda solo il link dell'app.</p>
       <button class="btn btn-oro btn-wide" id="esporta">⬇ Scarica backup</button>
       <button class="btn btn-ghost btn-wide" id="importaBtn" style="margin-top:10px">⬆ Ripristina da backup</button>
       <input type="file" id="importa" accept=".json,application/json" hidden>
@@ -564,74 +1005,125 @@ function viewImp(){
       <button class="btn btn-ghost btn-wide btn-danger" id="svuotaPlanner">Svuota il planner</button>
       <button class="btn btn-ghost btn-wide btn-danger" id="cancella" style="margin-top:10px">Cancella tutti i dati</button>
     </div>
-    <p class="small muted" style="text-align:center">Diario di Bordo · v5 · funziona anche offline</p>`;
+    <p class="small muted" style="text-align:center">Diario di Bordo · v6 · funziona anche offline</p>`;
 }
 function bindImp(){
-  document.getElementById("salvaNomi").onclick = ()=>{
-    stato.ragazzi = [
-      document.getElementById("n0").value.trim() || "Ragazzo 1",
-      document.getElementById("n1").value.trim() || "Ragazzo 2"
-    ];
-    salva(); toast("Nomi salvati ✓"); render();
+  const ridisegna = ()=>{ document.getElementById("ciurmaBox").innerHTML = htmlCiurma(); bindCiurma(ridisegna); };
+  bindCiurma(ridisegna);
+  document.getElementById("salvaCiurma").onclick = ()=>{ if(applicaCiurma()){ toast("Ciurma salvata ✓"); render(); } };
+  document.querySelectorAll("[data-esporta]").forEach(b => b.onclick = ()=>esportaDiario(Number(b.dataset.esporta)));
+  document.getElementById("esporta").onclick = ()=>{
+    scaricaFile(`diario-di-bordo-backup-${chiave(new Date())}.json`, JSON.stringify(stato,null,2), "application/json");
+    toast("Backup scaricato ⬇");
   };
-  document.getElementById("esporta").onclick = esportaBackup;
   const input = document.getElementById("importa");
   document.getElementById("importaBtn").onclick = ()=>input.click();
   input.onchange = ()=>{ if(input.files[0]) importaBackup(input.files[0]); };
   document.getElementById("svuotaPlanner").onclick = ()=>{
-    if(confirm("Svuotare tutto il planner? Le note del calendario restano.")){
+    if(confirm("Svuotare tutto il planner? Calendario, diario e cose da fare restano.")){
       stato.planner = {}; salva(); toast("Planner svuotato"); render();
     }
   };
   document.getElementById("cancella").onclick = ()=>{
-    if(confirm("Sicura? Planner, note e nomi verranno cancellati.\n\nConsiglio: scarica prima un backup.")){
-      stato = statoIniziale(); salva(); toast("Dati cancellati"); render();
+    if(confirm("Sicura? Planner, calendario, diario e cose da fare verranno cancellati.\n\nConsiglio: scarica prima un backup.")){
+      stato = statoIniziale(); salva(); toast("Dati cancellati"); render(); controllaBenvenuto();
     }
   };
 }
 
-function esportaBackup(){
-  const blob = new Blob([JSON.stringify(stato,null,2)], {type:"application/json"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url; a.download = `diario-di-bordo-${chiave(new Date())}.json`;
-  document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(()=>URL.revokeObjectURL(url), 2000);
-  toast("Backup scaricato ⬇");
+/** File di testo con eventi e diario di un ragazzo */
+function esportaDiario(r){
+  const nome = stato.ragazzi[r];
+  const righe = [`DIARIO DI BORDO — ${nome}`, `Esportato il ${dataLunga(new Date())}`, ""];
+  let trovati = 0;
+  for(const k of Object.keys(stato.giorni).sort()){
+    const gi = stato.giorni[k];
+    const d = gi.diario?.[r];
+    const eventi = (gi.eventi||[]).filter(e => e.r === r || e.r == null);
+    if(!d && !eventi.length) continue;
+    trovati++;
+    righe.push(`■ ${dataLunga(daChiave(k))}`);
+    if(d){
+      if(d.umore) righe.push(`  Giornata: ${UMORI[d.umore].e} ${UMORI[d.umore].nome}`);
+      if(d.testo) righe.push(...d.testo.split("\n").map(l => "  " + l));
+    }
+    for(const e of eventi) righe.push(`  ${TIPI[e.tipo]?.ico||"📌"} ${TIPI[e.tipo]?.nome||"Nota"}${e.r==null?" (generale)":""}${e.testo ? ": "+e.testo : ""}`);
+    righe.push("");
+  }
+  if(!trovati){ toast(`Nessuna voce nel diario di ${nome}`); return; }
+  const file = nome.toLowerCase().replace(/[^a-z0-9]+/gi,"-").replace(/^-|-$/g,"") || "ragazzo";
+  scaricaFile(`diario-${file}-${chiave(new Date())}.txt`, righe.join("\n"), "text/plain;charset=utf-8");
+  toast(`Diario di ${nome} scaricato 📜`);
 }
+
 function importaBackup(file){
   const r = new FileReader();
   r.onload = ()=>{
     try{
       let s = JSON.parse(r.result);
-      if(s && s.settimana && !s.planner) s = migraDaV2(s);     // accetta anche backup della v2
-      if(!s || typeof s.planner!=="object" || typeof s.note!=="object") throw new Error("formato");
+      if(s && s.settimana && !s.planner) s = migraDaV2(s);     // backup della v2
+      if(!s || typeof s.planner !== "object") throw new Error("formato");
       if(!confirm("Sostituire i dati attuali con quelli del backup?")) return;
-      localStorage.setItem(CHIAVE, JSON.stringify(s));
-      stato = carica(); toast("Backup ripristinato ✓"); render();
+      stato = normalizza(migra(s));
+      stato.profilo.configurato = true;
+      salva(); toast("Backup ripristinato ✓"); render();
     }catch(e){ toast("File di backup non valido"); }
   };
   r.readAsText(file);
 }
 
 // =========================================================
-// FOGLIO DAL BASSO + tasto indietro Android
+// BENVENUTO (primo avvio: utile quando l'app passa alle colleghe)
 // =========================================================
-let foglioAperto = false;
-function apriFoglio(){
+function controllaBenvenuto(){
+  if(stato.profilo.configurato) return;
+  bozzaCiurma = { nome:"", ragazzi:["",""] };
+  const disegna = ()=>{
+    document.getElementById("sheet").innerHTML = `
+      <div class="benvenuto">
+        <svg class="bussola" width="64" height="64" viewBox="0 0 64 64" aria-hidden="true">
+          <circle cx="32" cy="32" r="29" fill="none" stroke="#d9a441" stroke-width="3"/>
+          <path d="M32 6 L37 32 L32 58 L27 32Z" fill="#14324f"/><path d="M6 32 L32 27 L58 32 L32 37Z" fill="#d9a441"/>
+          <path d="M32 6 L37 32 L32 32Z" fill="#b8322a"/><circle cx="32" cy="32" r="4" fill="#fbf3df" stroke="#d9a441" stroke-width="2"/>
+        </svg>
+        <h3 class="pirata">Benvenuta a bordo!</h3>
+        <p class="muted" style="margin:4px 0 0">Il tuo planner, il calendario e il diario di bordo. Tutto resta solo sul tuo telefono.</p>
+        <div class="form" id="ciurmaBox">${htmlCiurma()}</div>
+        <button class="btn btn-prim btn-wide pirata" id="salpa" style="font-size:24px;margin-top:18px">Salpiamo! ⛵</button>
+      </div>`;
+    document.getElementById("salpa").onclick = ()=>{
+      if(applicaCiurma()){ chiudiFoglio(); render(); toast(stato.profilo.nome ? `Buon viaggio, ${stato.profilo.nome}! ⛵` : "Buon viaggio! ⛵"); }
+    };
+  };
+  // quando cambia il numero di ragazzi ridisegno solo il blocco "ciurma"
+  const rid = ()=>{ document.getElementById("ciurmaBox").innerHTML = htmlCiurma(); bindCiurma(rid); };
+  disegna(); bindCiurma(rid);
+  apriFoglio(null, true);
+}
+
+// =========================================================
+// FOGLIO DAL BASSO + tasto indietro di Android
+// =========================================================
+let foglioAperto = false, foglioBloccato = false, allaChiusura = null;
+function apriFoglio(onClose=null, bloccato=false){
   document.getElementById("overlay").classList.add("open");
   document.body.style.overflow = "hidden";
-  foglioAperto = true;
-  history.pushState({foglio:true}, "");
+  foglioAperto = true; foglioBloccato = bloccato; allaChiusura = onClose;
+  document.getElementById("sheet").scrollTop = 0;
+  if(!bloccato) history.pushState({foglio:true}, "");   // "indietro" chiude il foglio, non l'app
 }
 function chiudiFoglio(daBack=false){
+  if(!foglioAperto) return;
   document.getElementById("overlay").classList.remove("open");
   document.body.style.overflow = "";
   foglioAperto = false;
-  if(!daBack && history.state && history.state.foglio) history.back();
+  const cb = allaChiusura; allaChiusura = null;
+  if(!daBack && !foglioBloccato && history.state && history.state.foglio) history.back();
+  foglioBloccato = false;
+  if(cb) cb();
 }
-window.addEventListener("popstate", ()=>{ if(foglioAperto) chiudiFoglio(true); });
-document.getElementById("overlay").addEventListener("click", e=>{ if(e.target.id==="overlay") chiudiFoglio(); });
+window.addEventListener("popstate", ()=>{ if(foglioAperto && !foglioBloccato) chiudiFoglio(true); });
+document.getElementById("overlay").addEventListener("click", e=>{ if(e.target.id==="overlay" && !foglioBloccato) chiudiFoglio(); });
 
 // ---------- TOAST ----------
 let _t;
@@ -643,12 +1135,13 @@ function toast(msg){
 
 // ---------- AVVIO ----------
 render();
+controllaBenvenuto();
 document.addEventListener("visibilitychange", ()=>{ if(!document.hidden && !foglioAperto) render(); });
+
 if("serviceWorker" in navigator && location.protocol.startsWith("http")){
   // updateViaCache "none": controlla sempre sul server se c'è un sw.js nuovo
   navigator.serviceWorker.register("sw.js", { updateViaCache: "none" })
     .then(reg => {
-      // quando l'app torna in primo piano, controlla se c'è un aggiornamento
       document.addEventListener("visibilitychange", ()=>{ if(!document.hidden) reg.update().catch(()=>{}); });
     })
     .catch(e=>console.warn("SW non registrato", e));
@@ -656,7 +1149,7 @@ if("serviceWorker" in navigator && location.protocol.startsWith("http")){
   const avevaGiaSW = !!navigator.serviceWorker.controller;
   let ricaricato = false;
   navigator.serviceWorker.addEventListener("controllerchange", ()=>{
-    if(!avevaGiaSW || ricaricato) return;   // prima installazione: niente ricarica
+    if(!avevaGiaSW || ricaricato || foglioAperto) return;   // non interrompere chi sta scrivendo
     ricaricato = true;
     location.reload();
   });

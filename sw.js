@@ -2,7 +2,7 @@
    Strategia "prima la rete": se c'è connessione prende SEMPRE la versione
    più recente da GitHub; la copia in cache si usa solo offline.
    Quando modifichi l'app, cambia VERSIONE. */
-const VERSIONE = "diario-v6";
+const VERSIONE = "diario-v7";
 const FILE_APP = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./icon-maskable-512.png"];
 
 self.addEventListener("install", e => {
